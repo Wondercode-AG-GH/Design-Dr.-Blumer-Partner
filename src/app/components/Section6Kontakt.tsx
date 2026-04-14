@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, FormEvent } from "react";
 import { createPortal } from "react-dom";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import type { Breakpoint } from "./useBreakpoint";
 
 /* ─── Design tokens ─── */
 const C = {
@@ -201,14 +202,19 @@ function MapOverlay({ open, onClose, returnFocusRef }: MapOverlayProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
-  /* Focus management */
+  /* Focus management — only return focus AFTER overlay was actually opened.
+     Avoids page jumping on initial mount (calling .focus() scrolls the element
+     into view, which on mobile jumps the whole page down to the trigger). */
+  const wasOpenRef = useRef(false);
   useEffect(() => {
     if (open) {
+      wasOpenRef.current = true;
       // Wait until close button is visually present (300ms delay + 250ms fade = 550ms)
       const t = setTimeout(() => closeBtnRef.current?.focus(), 550);
       return () => clearTimeout(t);
-    } else {
-      returnFocusRef.current?.focus();
+    } else if (wasOpenRef.current) {
+      // Only return focus if overlay was previously open — not on initial mount
+      returnFocusRef.current?.focus({ preventScroll: true });
     }
   }, [open, returnFocusRef]);
 
@@ -351,7 +357,7 @@ function MapOverlay({ open, onClose, returnFocusRef }: MapOverlayProps) {
 /* ═══════════════════════════════════════════════════════════
    CONTACT FORM (Card content)
    ═══════════════════════════════════════════════════════════ */
-function ContactForm() {
+function ContactForm({ stack = false }: { stack?: boolean } = {}) {
   const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     firstName: "", lastName: "", email: "", phone: "", message: "",
@@ -364,12 +370,13 @@ function ContactForm() {
 
   const fieldStyle: React.CSSProperties = {
     fontFamily: sans,
-    fontSize: "13px",
+    fontSize: stack ? "14px" : "13px",
     color: C.textPrimary,
     backgroundColor: "transparent",
     border: `0.5px solid ${C.borderTertiary}`,
     borderRadius: "6px",
-    padding: "10px 12px",
+    padding: stack ? "12px 14px" : "10px 12px",
+    minHeight: stack ? "44px" : undefined, // Apple HIG touch target on mobile
     outline: "none",
     width: "100%",
     transition: "border-color 0.3s ease",
@@ -389,9 +396,15 @@ function ContactForm() {
     );
   }
 
+  /* Stack mode: every field gets its own row (mobile / vertical).
+     Default mode: two-column pairs (Vorname+Nachname, E-Mail+Telefon). */
+  const pairStyle: React.CSSProperties = stack
+    ? { display: "flex", flexDirection: "column", gap: "10px" }
+    : { display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" };
+
   return (
     <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+      <div style={pairStyle}>
         <input
           type="text" placeholder="Vorname" required
           value={form.firstName}
@@ -407,7 +420,7 @@ function ContactForm() {
           className="placeholder:text-[#B0ACA5] focus:border-[#1A1916]"
         />
       </div>
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+      <div style={pairStyle}>
         <input
           type="email" placeholder="E-Mail" required
           value={form.email}
@@ -427,47 +440,332 @@ function ContactForm() {
         placeholder="Nachricht" required
         value={form.message}
         onChange={(e) => setForm({ ...form, message: e.target.value })}
-        style={{ ...fieldStyle, height: "80px", resize: "none" }}
+        style={{ ...fieldStyle, height: stack ? "100px" : "80px", resize: "none" }}
         className="placeholder:text-[#B0ACA5] focus:border-[#1A1916]"
       />
-      <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "6px" }}>
-        <button
-          type="submit"
-          style={{
-            fontFamily: sans,
-            fontSize: "10px",
-            letterSpacing: "0.2em",
-            textTransform: "uppercase",
-            color: "#FFFFFF",
-            backgroundColor: C.textPrimary,
-            border: "none",
-            borderRadius: "6px",
-            padding: "13px 28px",
-            cursor: "pointer",
-            transition: "background-color 0.3s ease",
-            appearance: "none",
-          }}
-          className="hover:bg-[#3A3835]"
-        >
-          Anfrage senden →
-        </button>
-        <span style={{ fontFamily: sans, fontSize: "10px", color: C.textTertiary }}>
-          Antwort innert 24h
-        </span>
-      </div>
+
+      {stack ? (
+        /* Mobile: full-width button + caption underneath, centered */
+        <div style={{ marginTop: "10px" }}>
+          <button
+            type="submit"
+            style={{
+              fontFamily: sans,
+              fontSize: "11px",
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "#FFFFFF",
+              backgroundColor: C.textPrimary,
+              border: "none",
+              borderRadius: "6px",
+              padding: "16px",
+              cursor: "pointer",
+              transition: "background-color 0.3s ease",
+              appearance: "none",
+              width: "100%",
+            }}
+            className="hover:bg-[#3A3835]"
+          >
+            Anfrage senden →
+          </button>
+          <span
+            style={{
+              fontFamily: sans,
+              fontSize: "11px",
+              color: C.textTertiary,
+              display: "block",
+              textAlign: "center",
+              marginTop: "10px",
+            }}
+          >
+            Antwort innert 24h
+          </span>
+        </div>
+      ) : (
+        <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "6px" }}>
+          <button
+            type="submit"
+            style={{
+              fontFamily: sans,
+              fontSize: "10px",
+              letterSpacing: "0.2em",
+              textTransform: "uppercase",
+              color: "#FFFFFF",
+              backgroundColor: C.textPrimary,
+              border: "none",
+              borderRadius: "6px",
+              padding: "13px 28px",
+              cursor: "pointer",
+              transition: "background-color 0.3s ease",
+              appearance: "none",
+            }}
+            className="hover:bg-[#3A3835]"
+          >
+            Anfrage senden →
+          </button>
+          <span style={{ fontFamily: sans, fontSize: "10px", color: C.textTertiary }}>
+            Antwort innert 24h
+          </span>
+        </div>
+      )}
     </form>
   );
 }
 
 /* ═══════════════════════════════════════════════════════════
    SECTION 6 — KONTAKT
-   2 columns: Editorial (left) | Form (right, on bg-secondary)
+   Desktop: 2 columns (Editorial left | Form right on bg-secondary).
+   Mobile/Tablet: stacked single column, no card-in-card.
    Map is rendered via MapOverlay (portal) — does NOT affect layout.
    ═══════════════════════════════════════════════════════════ */
-export function Section6Kontakt() {
+interface Section6Props {
+  isVertical?: boolean;
+  breakpoint?: Breakpoint;
+}
+
+export function Section6Kontakt({ isVertical = false, breakpoint = "desktop" }: Section6Props = {}) {
   const [mapOpen, setMapOpen] = useState(false);
   const openBtnRef = useRef<HTMLButtonElement>(null);
 
+  /* ═══ VERTICAL MODE (mobile + tablet) — stacked, no card-in-card ═══ */
+  if (isVertical) {
+    const isMobile = breakpoint === "mobile";
+    const padX = isMobile ? "20px" : "clamp(32px, 6vw, 64px)";
+    return (
+      <section
+        id="section-kontakt"
+        style={{
+          backgroundColor: C.bgPrimary,
+          padding: `clamp(48px, 7vh, 80px) ${padX} 48px`,
+        }}
+      >
+        {/* Eyebrow */}
+        <span
+          style={{
+            fontFamily: sans,
+            fontSize: "10px",
+            letterSpacing: "2.5px",
+            color: C.textTertiary,
+            display: "block",
+            textTransform: "uppercase",
+          }}
+        >
+          Kontakt
+        </span>
+
+        {/* Accent line */}
+        <div
+          style={{
+            width: "28px",
+            height: "1.5px",
+            backgroundColor: C.textPrimary,
+            margin: "12px 0",
+          }}
+        />
+
+        {/* Headline — same wording as desktop */}
+        <h2
+          style={{
+            fontFamily: serif,
+            fontSize: isMobile ? "clamp(28px, 8vw, 36px)" : "clamp(36px, 5vw, 48px)",
+            lineHeight: 1.12,
+            color: C.textPrimary,
+            letterSpacing: "-0.02em",
+            margin: "16px 0 0 0",
+            fontWeight: 400,
+          }}
+        >
+          Ein Gespräch ist
+          <br />
+          <em style={{ fontStyle: "italic", fontWeight: 400 }}>der Anfang.</em>
+        </h2>
+
+        {/* Body */}
+        <p
+          style={{
+            fontFamily: sans,
+            fontSize: isMobile ? "14px" : "15px",
+            color: C.textSecondary,
+            lineHeight: 1.65,
+            maxWidth: "520px",
+            marginTop: "24px",
+          }}
+        >
+          Wenn Sie wissen möchten, ob unsere Arbeitsweise zu Ihren Erwartungen passt, laden wir Sie zu einem unverbindlichen Erstgespräch ein. Persönlich, vertraulich, in unseren Räumen an der Löwenstrasse oder digital.
+        </p>
+
+        {/* Form section header — replaces the Card on mobile */}
+        <div style={{ marginTop: "32px" }}>
+          <span
+            style={{
+              fontFamily: sans,
+              fontSize: "10px",
+              letterSpacing: "2px",
+              color: C.textTertiary,
+              display: "block",
+              textTransform: "uppercase",
+              marginBottom: "16px",
+            }}
+          >
+            Schreiben Sie uns
+          </span>
+          <ContactForm stack />
+        </div>
+
+        {/* Address */}
+        <div style={{ marginTop: "40px" }}>
+          <div
+            style={{
+              width: "100%",
+              height: "0.5px",
+              backgroundColor: C.borderTertiary,
+              marginBottom: "20px",
+            }}
+          />
+          <span
+            style={{
+              fontFamily: sans,
+              fontSize: "13px",
+              fontWeight: 500,
+              color: C.textPrimary,
+              display: "block",
+            }}
+          >
+            Tellian Capital
+          </span>
+          <span
+            style={{
+              fontFamily: sans,
+              fontSize: "12px",
+              color: C.textTertiary,
+              display: "block",
+              marginTop: "2px",
+            }}
+          >
+            Vermögensverwaltung Zürich AG
+          </span>
+          <span
+            style={{
+              fontFamily: sans,
+              fontSize: "12px",
+              color: C.textTertiary,
+              display: "block",
+              marginTop: "4px",
+            }}
+          >
+            Löwenstrasse 1, CH-8001 Zürich
+          </span>
+
+          {/* Tel + Mail as touch-friendly rows (44px min height) */}
+          <div style={{ display: "flex", flexDirection: "column", marginTop: "8px" }}>
+            <a
+              href="tel:+41442244024"
+              style={{
+                fontFamily: sans,
+                fontSize: "13px",
+                color: C.textSecondary,
+                display: "flex",
+                alignItems: "center",
+                minHeight: "44px",
+                padding: "4px 0",
+              }}
+              className="hover:text-[#1A1916] transition-colors duration-300"
+            >
+              +41 44 224 40 24
+            </a>
+            <a
+              href="mailto:info@telliancapital.ch"
+              style={{
+                fontFamily: sans,
+                fontSize: "13px",
+                color: C.textSecondary,
+                display: "flex",
+                alignItems: "center",
+                minHeight: "44px",
+                padding: "4px 0",
+              }}
+              className="hover:text-[#1A1916] transition-colors duration-300"
+            >
+              info@telliancapital.ch
+            </a>
+          </div>
+        </div>
+
+        {/* "Auf Karte anzeigen" link — opens shared MapOverlay */}
+        <button
+          ref={openBtnRef}
+          onClick={() => setMapOpen(true)}
+          aria-expanded={mapOpen}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "8px",
+            background: "transparent",
+            border: "none",
+            cursor: "pointer",
+            padding: "12px 4px",     // 44px min touch target on mobile
+            minHeight: "44px",
+            fontFamily: sans,
+            fontSize: "10px",
+            letterSpacing: "1px",
+            textTransform: "uppercase",
+            color: C.textTertiary,
+            marginTop: "16px",
+            transition: "color 0.3s ease",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = C.textSecondary)}
+          onMouseLeave={(e) => (e.currentTarget.style.color = C.textTertiary)}
+        >
+          <span
+            style={{
+              display: "inline-block",
+              width: "4px",
+              height: "4px",
+              borderRadius: "50%",
+              backgroundColor: "currentColor",
+            }}
+            aria-hidden
+          />
+          Auf Karte anzeigen
+        </button>
+
+        {/* Footer */}
+        <div
+          style={{
+            marginTop: "48px",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <div style={{ width: "16px", height: "1px", backgroundColor: C.borderTertiary }} />
+          <span
+            style={{
+              fontFamily: sans,
+              fontSize: "8px",
+              letterSpacing: "0.16em",
+              color: C.muted,
+              opacity: 0.6,
+              textTransform: "uppercase",
+              textAlign: "center",
+            }}
+          >
+            Tellian Capital AG &mdash; Est. 1996 &mdash; Zürich
+          </span>
+        </div>
+
+        {/* Shared overlay (portal) */}
+        <MapOverlay
+          open={mapOpen}
+          onClose={() => setMapOpen(false)}
+          returnFocusRef={openBtnRef}
+        />
+      </section>
+    );
+  }
+
+  /* ═══ DESKTOP MODE ═══ */
   return (
     <div
       className="flex-shrink-0 h-screen flex"

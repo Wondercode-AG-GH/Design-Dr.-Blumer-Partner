@@ -1,6 +1,8 @@
+import { useRef, useEffect, useState } from "react";
 import { LAYOUT, getLayout, getTextColumnStyle, SPACING } from "../layout";
 import { CtaButton } from "./CtaButton";
 import { ScrollFade } from "./ScrollAnimations";
+import { ExpandableBody } from "./ExpandableBody";
 import type { Breakpoint } from "./useBreakpoint";
 
 /* ═══════════════════════════════════════════════════════════
@@ -99,18 +101,23 @@ function PortraitCard({
   width,
   nameSize = "16px",
   roleSize = "13px",
+  /** Aspect ratio (height/width %). Default 3:4 portrait (133.333%). */
+  aspectPct = "133.333%",
+  nameWeight = 600,
 }: {
   member: TeamMember;
   width: string;
   nameSize?: string;
   roleSize?: string;
+  aspectPct?: string;
+  nameWeight?: number;
 }) {
   return (
     <div style={{ width, flexShrink: 0 }}>
-      {/* Photo — 3:4 portrait ratio */}
+      {/* Photo */}
       <div
         className="w-full relative overflow-hidden"
-        style={{ paddingBottom: "133.333%" }}
+        style={{ paddingBottom: aspectPct }}
       >
         <div
           className="absolute inset-0 bg-cover bg-no-repeat"
@@ -128,7 +135,7 @@ function PortraitCard({
           style={{
             fontFamily: sans,
             fontSize: nameSize,
-            fontWeight: 600,
+            fontWeight: nameWeight,
             color: C.dark,
             display: "block",
             lineHeight: 1.2,
@@ -150,6 +157,64 @@ function PortraitCard({
           {member.role}
         </span>
       </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STAGGERED PORTRAIT — IntersectionObserver-driven reveal
+   for use in vertical (mobile/tablet) grid.
+   ═══════════════════════════════════════════════════════════ */
+function StaggeredPortrait({
+  member,
+  aspectPct,
+  nameSize,
+  roleSize,
+  delayMs,
+}: {
+  member: TeamMember;
+  aspectPct: string;
+  nameSize: string;
+  roleSize: string;
+  delayMs: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setRevealed(true);
+          obs.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  return (
+    <div
+      ref={ref}
+      style={{
+        opacity: revealed ? 1 : 0,
+        transform: revealed ? "translateY(0)" : "translateY(20px)",
+        transition: `opacity 500ms cubic-bezier(0.16, 1, 0.3, 1) ${delayMs}ms, transform 500ms cubic-bezier(0.16, 1, 0.3, 1) ${delayMs}ms`,
+        willChange: "opacity, transform",
+      }}
+    >
+      <PortraitCard
+        member={member}
+        width="100%"
+        nameSize={nameSize}
+        roleSize={roleSize}
+        aspectPct={aspectPct}
+        nameWeight={500}
+      />
     </div>
   );
 }
@@ -222,28 +287,15 @@ export function Section5UeberTellian({
           </ScrollFade>
 
           <ScrollFade scrollX={0} isVertical yOffset={20}>
-            <div
-              style={{
-                marginTop: SPACING.headlineToBody,
-                maxWidth: layout.bodyMaxWidth,
-                display: "flex",
-                flexDirection: "column",
-                gap: SPACING.bodyParagraphGap,
-              }}
-            >
-              {BODY.map((text, i) => (
-                <p
-                  key={i}
-                  style={{
-                    fontFamily: sans,
-                    fontSize: breakpoint === "mobile" ? "13px" : "12px",
-                    color: C.charcoal,
-                    lineHeight: 1.85,
-                  }}
-                >
-                  {text}
-                </p>
-              ))}
+            <div style={{ marginTop: SPACING.headlineToBody }}>
+              <ExpandableBody
+                paragraphs={[...BODY]}
+                visibleCount={1}
+                fontSize={breakpoint === "mobile" ? "14px" : "13px"}
+                lineHeight={1.7}
+                gap="14px"
+                maxWidth={layout.bodyMaxWidth}
+              />
             </div>
           </ScrollFade>
 
@@ -257,25 +309,34 @@ export function Section5UeberTellian({
         </div>
 
         {/* Team grid — responsive, each card fades in individually */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: breakpoint === "mobile" ? "1fr" : "1fr 1fr",
-            gap: breakpoint === "mobile" ? "24px" : "20px",
-            padding: breakpoint === "mobile" ? "32px 20px 48px" : "32px clamp(32px, 6vw, 80px) 48px",
-          }}
-        >
-          {TEAM.map((member) => (
-            <ScrollFade key={member.name} scrollX={0} isVertical yOffset={18}>
-              <PortraitCard
-                member={member}
-                width="100%"
-                nameSize="14px"
-                roleSize="12px"
-              />
-            </ScrollFade>
-          ))}
-        </div>
+        {(() => {
+          // Mobile: 2 cols, Tablet: 3 cols
+          const cols = breakpoint === "mobile" ? 2 : 3;
+          const aspectPct = "125%"; // 4:5 ratio (height/width)
+          return (
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: `repeat(${cols}, 1fr)`,
+                gap: breakpoint === "mobile" ? "16px" : "20px",
+                padding: breakpoint === "mobile"
+                  ? "32px 20px 48px"
+                  : "32px clamp(32px, 6vw, 80px) 48px",
+              }}
+            >
+              {TEAM.map((member, i) => (
+                <StaggeredPortrait
+                  key={member.name}
+                  member={member}
+                  aspectPct={aspectPct}
+                  nameSize={breakpoint === "mobile" ? "13px" : "14px"}
+                  roleSize={breakpoint === "mobile" ? "11px" : "12px"}
+                  delayMs={(i % cols) * 100}
+                />
+              ))}
+            </div>
+          );
+        })()}
       </section>
     );
   }

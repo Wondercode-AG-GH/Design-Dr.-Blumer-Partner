@@ -1,5 +1,6 @@
 import { HeroExpandingImage, ScrollFade } from "./ScrollAnimations";
 import { CtaButton } from "./CtaButton";
+import { ExpandableBody } from "./ExpandableBody";
 import philosophyImg from "figma:asset/a44e63e47eecf6c5811f4525d593bd929e31be63.png";
 import { LAYOUT, getLayout, getTextColumnStyle, SPACING } from "../layout";
 import type { Breakpoint } from "./useBreakpoint";
@@ -174,29 +175,15 @@ export function Section2Anlagephilosophie({ scrollX, isVertical = false, breakpo
           </ScrollFade>
 
           <ScrollFade scrollX={0} isVertical yOffset={20}>
-            <div
-              style={{
-                marginTop: SPACING.headlineToBody,
-                maxWidth: layout.bodyMaxWidth,
-                display: "flex",
-                flexDirection: "column",
-                gap: SPACING.bodyParagraphGap,
-              }}
-            >
-              {BODY_PARAGRAPHS.map((text, i) => (
-                <p
-                  key={i}
-                  style={{
-                    fontFamily: sans,
-                    fontSize: breakpoint === "mobile" ? "13px" : "12px",
-                    color: C.charcoal,
-                    lineHeight: 1.85,
-                    margin: 0,
-                  }}
-                >
-                  {text}
-                </p>
-              ))}
+            <div style={{ marginTop: SPACING.headlineToBody }}>
+              <ExpandableBody
+                paragraphs={BODY_PARAGRAPHS}
+                visibleCount={1}
+                fontSize={breakpoint === "mobile" ? "14px" : "13px"}
+                lineHeight={1.7}
+                gap="14px"
+                maxWidth={layout.bodyMaxWidth}
+              />
             </div>
           </ScrollFade>
 

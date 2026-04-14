@@ -197,7 +197,7 @@ export function Navigation({
             </span>
           </button>
 
-          {/* Hamburger */}
+          {/* Hamburger — 44×44 touch target per Apple HIG */}
           <button
             onClick={() => setExpanded(!expanded)}
             style={{
@@ -205,9 +205,13 @@ export function Navigation({
               cursor: "pointer",
               border: "none",
               background: "transparent",
-              padding: 8,
+              width: 44,
+              height: 44,
+              margin: -10, // absorb the extra space so visual position stays the same
               display: "flex",
               flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
               gap: 5,
             }}
             aria-label={expanded ? "Menü schliessen" : "Menü öffnen"}
@@ -274,7 +278,18 @@ export function Navigation({
                 </span>
                 <button
                   onClick={() => setExpanded(false)}
-                  style={{ outline: "none", border: "none", background: "transparent", cursor: "pointer", padding: 4 }}
+                  style={{
+                    outline: "none",
+                    border: "none",
+                    background: "transparent",
+                    cursor: "pointer",
+                    width: 44,
+                    height: 44,
+                    margin: -10,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
                   aria-label="Menü schliessen"
                 >
                   <svg width="18" height="18" viewBox="0 0 16 16" fill="none">

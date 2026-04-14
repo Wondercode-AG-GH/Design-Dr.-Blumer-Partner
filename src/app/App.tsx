@@ -15,6 +15,8 @@ import { DotNavigation } from "./components/DotNavigation";
 import { CtaButton } from "./components/CtaButton";
 import { Section5UeberTellian } from "./components/Section5UeberTellian";
 import { Section6Kontakt } from "./components/Section6Kontakt";
+import { HeroVertical } from "./components/HeroVertical";
+import { ExpandableBody } from "./components/ExpandableBody";
 import { Section2Anlagephilosophie } from "./components/Section2Anlagephilosophie";
 import { Section3Timeline } from "./components/Section3Timeline";
 import { LAYOUT, TEXT_COLUMN_STYLE, getLayout, getTextColumnStyle, SPACING } from "./layout";
@@ -262,8 +264,13 @@ function Section3Vermoegensverwaltung({ scrollX, isVertical = false, breakpoint 
         id="section-vermoegensverwaltung"
         style={{ backgroundColor: C.bg }}
       >
-        {/* Timeline visual on top for vertical */}
-        <div style={{ width: "100%", height: breakpoint === "mobile" ? "50vh" : "60vh", position: "relative" }}>
+        {/* Timeline visual on top for vertical — auto height on mobile */}
+        <div style={{
+          width: "100%",
+          height: breakpoint === "mobile" ? "auto" : "60vh",
+          padding: breakpoint === "mobile" ? "32px 16px" : undefined,
+          position: "relative",
+        }}>
           <Section3Timeline scrollX={0} isVertical />
         </div>
 
@@ -312,28 +319,15 @@ function Section3Vermoegensverwaltung({ scrollX, isVertical = false, breakpoint 
           </ScrollFade>
 
           <ScrollFade scrollX={0} isVertical yOffset={20}>
-            <div
-              style={{
-                marginTop: SPACING.headlineToBody,
-                maxWidth: layout.bodyMaxWidth,
-                display: "flex",
-                flexDirection: "column",
-                gap: SPACING.bodyParagraphGap,
-              }}
-            >
-              {bodyParagraphs.map((text, i) => (
-                <p
-                  key={i}
-                  style={{
-                    fontFamily: sans,
-                    fontSize: breakpoint === "mobile" ? "13px" : "12.5px",
-                    color: C.charcoal,
-                    lineHeight: 1.9,
-                  }}
-                >
-                  {text}
-                </p>
-              ))}
+            <div style={{ marginTop: SPACING.headlineToBody }}>
+              <ExpandableBody
+                paragraphs={bodyParagraphs}
+                visibleCount={1}
+                fontSize={breakpoint === "mobile" ? "14px" : "13px"}
+                lineHeight={1.7}
+                gap="14px"
+                maxWidth={layout.bodyMaxWidth}
+              />
             </div>
           </ScrollFade>
 
@@ -458,8 +452,13 @@ function Section4Anlagestrategien({ scrollX, isVertical = false, breakpoint = "d
         id="section-anlagestrategien"
         style={{ backgroundColor: C.bg }}
       >
-        {/* Visual on top */}
-        <div style={{ width: "100%", height: breakpoint === "mobile" ? "50vh" : "60vh", position: "relative" }}>
+        {/* Visual on top — natural height on mobile so content never clips */}
+        <div style={{
+          width: "100%",
+          height: breakpoint === "mobile" ? "auto" : "60vh",
+          padding: breakpoint === "mobile" ? "32px 16px" : undefined,
+          position: "relative",
+        }}>
           <Section4TopDownBottomUp scrollX={0} isVertical />
         </div>
 
@@ -506,28 +505,15 @@ function Section4Anlagestrategien({ scrollX, isVertical = false, breakpoint = "d
           </ScrollFade>
 
           <ScrollFade scrollX={0} isVertical yOffset={20}>
-            <div
-              style={{
-                marginTop: SPACING.headlineToBody,
-                maxWidth: layout.bodyMaxWidth,
-                display: "flex",
-                flexDirection: "column",
-                gap: SPACING.bodyParagraphGap,
-              }}
-            >
-              {bodyParagraphs.map((text, i) => (
-                <p
-                  key={i}
-                  style={{
-                    fontFamily: sans,
-                    fontSize: breakpoint === "mobile" ? "13px" : "12.5px",
-                    color: C.charcoal,
-                    lineHeight: 1.9,
-                  }}
-                >
-                  {text}
-                </p>
-              ))}
+            <div style={{ marginTop: SPACING.headlineToBody }}>
+              <ExpandableBody
+                paragraphs={bodyParagraphs}
+                visibleCount={1}
+                fontSize={breakpoint === "mobile" ? "14px" : "13px"}
+                lineHeight={1.7}
+                gap="14px"
+                maxWidth={layout.bodyMaxWidth}
+              />
             </div>
           </ScrollFade>
 
@@ -676,120 +662,13 @@ export default function App() {
           isVertical
         />
 
-        {/* ── HERO ── */}
-        <section
-          id="section-hero"
-          className="relative"
-          style={{
-            minHeight: "100vh",
-            backgroundColor: C.bg,
-            paddingTop: 56, // below fixed nav
-          }}
-        >
-          {/* Image */}
-          <div
-            style={{
-              width: "100%",
-              height: isMobile ? "45vh" : "50vh",
-              position: "relative",
-            }}
-          >
-            <HeroExpandingImage
-              src={IMG.hero}
-              scrollX={0}
-              className="w-full h-full"
-              isVertical
-            />
-          </div>
-
-          {/* Content */}
-          <div style={{ ...textColStyle }}>
-            <ScrollFade scrollX={0} isVertical yOffset={16}>
-              <span
-                style={{
-                  fontFamily: sans,
-                  fontSize: isMobile ? "10px" : "12px",
-                  letterSpacing: "0.15em",
-                  color: C.stone,
-                  display: "block",
-                }}
-                className="uppercase"
-              >
-                UNABHÄNGIGE VERMÖGENSVERWALTUNG · ZÜRICH · SEIT 1996
-              </span>
-
-              <div
-                style={{
-                  width: "32px",
-                  height: "1.5px",
-                  backgroundColor: C.dark,
-                  marginTop: SPACING.eyebrowToAccent,
-                }}
-              />
-            </ScrollFade>
-
-            <ScrollFade scrollX={0} isVertical yOffset={24}>
-              <h1
-                style={{
-                  fontFamily: serif,
-                  fontSize: isMobile ? "clamp(48px, 14vw, 72px)" : "clamp(72px, 10vw, 100px)",
-                  lineHeight: 0.93,
-                  color: C.dark,
-                  letterSpacing: "-0.03em",
-                  marginTop: SPACING.accentToHeadline,
-                  fontWeight: 400,
-                }}
-              >
-                Vermögen
-                <br />
-                <em style={{ fontStyle: "italic", fontWeight: 400 }}>mit Methode</em>
-              </h1>
-            </ScrollFade>
-
-            <ScrollFade scrollX={0} isVertical yOffset={20}>
-              <p
-                style={{
-                  fontFamily: sans,
-                  fontSize: isMobile ? "13px" : "12px",
-                  color: C.charcoal,
-                  lineHeight: 1.85,
-                  maxWidth: "520px",
-                  marginTop: SPACING.headlineToBody,
-                }}
-              >
-                Tellian Capital ist eine FINMA-lizenzierte Vermögensverwaltung mit Sitz in Zürich. Wir verwalten Vermögen auf Mandatsbasis — quantitativ gestützt, unabhängig von Bankprodukten und frei von Vertriebsinteressen. Jeder Anlageentscheid folgt einem systematischen Prozess: eigene quantitative Modelle, ein monatlich tagendes Anlagekomitee und eine klare Trennung zwischen Kundeninteresse und Produktvertrieb.
-              </p>
-            </ScrollFade>
-
-            <ScrollFade scrollX={0} isVertical yOffset={16}>
-              <div style={{ marginTop: SPACING.bodyToCta }}>
-                <CtaButton href="#contact" onClick={(e) => { e.preventDefault(); navigateToContact(); }}>
-                  Gespräch vereinbaren
-                </CtaButton>
-              </div>
-
-              <div
-                className="flex items-center gap-3"
-                style={{ marginTop: "12px", paddingBottom: "48px" }}
-              >
-                <div
-                  style={{ width: "16px", height: "1px", backgroundColor: C.muted }}
-                />
-                <span
-                  style={{
-                    fontFamily: sans,
-                    fontSize: "10px",
-                    letterSpacing: "0.16em",
-                    color: C.stone,
-                  }}
-                  className="uppercase"
-                >
-                  FINMA-LIZENZIERT · ZÜRICH
-                </span>
-              </div>
-            </ScrollFade>
-          </div>
-        </section>
+        {/* ── HERO (mobile/tablet — page-load stagger animation) ── */}
+        <HeroVertical
+          imageSrc={IMG.hero}
+          introComplete={introComplete}
+          breakpoint={breakpoint}
+          onCtaClick={navigateToContact}
+        />
 
         {/* ── ANLAGEPHILOSOPHIE ── */}
         <Section2Anlagephilosophie scrollX={0} isVertical breakpoint={breakpoint} />
@@ -806,149 +685,8 @@ export default function App() {
           breakpoint={breakpoint}
         />
 
-        {/* ── KONTAKT ── */}
-        <section
-          id="section-kontakt"
-          className="relative"
-          style={{ backgroundColor: C.bg, minHeight: "100vh" }}
-        >
-          {/* Image */}
-          <div
-            style={{
-              width: "100%",
-              height: isMobile ? "40vh" : "45vh",
-              position: "relative",
-            }}
-          >
-            <ScrollImage
-              src={IMG.alpine}
-              scrollX={0}
-              className="absolute inset-0"
-              overlayOpacity={0.1}
-              isVertical
-            />
-          </div>
-
-          <div style={{ ...textColStyle }}>
-            <ScrollFade scrollX={0} isVertical yOffset={16}>
-              <span
-                style={{
-                  fontFamily: sans,
-                  letterSpacing: "0.28em",
-                  color: C.dark,
-                }}
-                className="text-[9px] uppercase block mb-8"
-              >
-                Kontakt
-              </span>
-            </ScrollFade>
-
-            <ScrollFade scrollX={0} isVertical yOffset={24}>
-              <h2
-                style={{
-                  fontFamily: serif,
-                  lineHeight: 1.05,
-                  color: C.dark,
-                  fontSize: isMobile ? "clamp(1.6rem, 7vw, 2.4rem)" : "clamp(2rem, 4vw, 3.2rem)",
-                }}
-                className="tracking-[-0.02em]"
-              >
-                Ein Gespräch kostet nichts.
-              </h2>
-              <h2
-                style={{
-                  fontFamily: serif,
-                  fontStyle: "italic",
-                  lineHeight: 1.05,
-                  color: C.dark,
-                  fontSize: isMobile ? "clamp(1.6rem, 7vw, 2.4rem)" : "clamp(2rem, 4vw, 3.2rem)",
-                }}
-                className="tracking-[-0.02em] mt-0.5"
-              >
-                Ausser etwas Zeit.
-              </h2>
-            </ScrollFade>
-
-            <ScrollFade scrollX={0} isVertical yOffset={20}>
-              <p
-                style={{
-                  fontFamily: sans,
-                  color: C.dark,
-                  lineHeight: 1.9,
-                }}
-                className="text-[12px] max-w-[400px] mt-7"
-              >
-                Wenn Sie wissen möchten, ob unsere Arbeitsweise zu Ihren
-                Erwartungen passt, laden wir Sie zu einem unverbindlichen
-                Erstgespräch ein. Persönlich, vertraulich, in unseren
-                Räumen an der Löwenstrasse oder digital.
-              </p>
-            </ScrollFade>
-
-            <ScrollFade scrollX={0} isVertical yOffset={16}>
-              <div className="mt-10">
-                <span
-                  style={{
-                    fontFamily: sans,
-                    letterSpacing: "0.12em",
-                    color: C.stone,
-                  }}
-                  className="text-[9px] uppercase block mb-8"
-                >
-                  Schreiben Sie uns
-                </span>
-                <ContactForm scrollX={0} isVertical />
-              </div>
-            </ScrollFade>
-
-            {/* Address */}
-            <div className="mt-12 pb-12">
-              <div
-                className="w-6 h-[1px] mb-6"
-                style={{ backgroundColor: C.line }}
-              />
-              <div
-                style={{
-                  fontFamily: sans,
-                  color: C.charcoal,
-                  lineHeight: 2.0,
-                }}
-                className="text-[11px]"
-              >
-                <span className="block" style={{ color: C.dark }}>Tellian Capital AG</span>
-                <span className="block">Löwenstrasse 1</span>
-                <span className="block">CH-8001 Zürich</span>
-                <span className="block mt-2">
-                  <a href="tel:+41442244024" className="hover:text-[#1A1916] transition-colors duration-500">
-                    +41 44 224 40 24
-                  </a>
-                </span>
-                <span className="block">
-                  <a href="mailto:info@telliancapital.ch" className="hover:text-[#1A1916] transition-colors duration-500">
-                    info@telliancapital.ch
-                  </a>
-                </span>
-              </div>
-            </div>
-          </div>
-
-          {/* Footer */}
-          <div className="flex justify-center pb-8">
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-4 h-[1px]" style={{ backgroundColor: C.line }} />
-              <span
-                style={{
-                  fontFamily: sans,
-                  letterSpacing: "0.16em",
-                  color: C.muted,
-                }}
-                className="text-[7px] uppercase opacity-50"
-              >
-                Tellian Capital AG &mdash; Est. 1996 &mdash; Zürich
-              </span>
-            </div>
-          </div>
-        </section>
+        {/* ── KONTAKT (mobile/tablet — 5-field form, MapOverlay trigger) ── */}
+        <Section6Kontakt isVertical breakpoint={breakpoint} />
       </div>
     );
   }
