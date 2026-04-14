@@ -24,7 +24,7 @@ function AccentRow({
       <span
         style={{
           fontFamily: sans,
-          fontSize:   "15px",
+          fontSize:   "clamp(13px, 3.5vw, 15px)",
           color:      "#8A857C",
           lineHeight: 1.4,
         }}
@@ -87,15 +87,16 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false }: Props) 
         transition:     "opacity 600ms ease-out",
       }}
     >
-      {/* ── Contained block: width just slightly wider than content ── */}
+      {/* ── Contained block: mobile uses full viewport width + natural height ── */}
       <div
         style={{
-          width:         "clamp(460px, 34vw, 540px)",
+          width:         isVertical ? "100%" : "clamp(460px, 34vw, 540px)",
+          maxWidth:      isVertical ? "540px" : undefined,
           display:       "flex",
           flexDirection: "column",
-          height:        "72vh",
-          minHeight:     "480px",
-          maxHeight:     "680px",
+          height:        isVertical ? "auto" : "72vh",
+          minHeight:     isVertical ? undefined : "480px",
+          maxHeight:     isVertical ? undefined : "680px",
         }}
       >
         {/* ════════════════════════════════════════════════
@@ -108,7 +109,8 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false }: Props) 
             display:         "flex",
             flexDirection:   "column",
             justifyContent:  "flex-end",
-            padding:         "44px 52px",
+            padding:         "clamp(24px, 6vw, 44px) clamp(20px, 6vw, 52px)",
+            minHeight:       isVertical ? "240px" : undefined,
           }}
         >
           {/* Kleine Überschrift */}
@@ -130,7 +132,7 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false }: Props) 
           <span
             style={{
               fontFamily:    serif,
-              fontSize:      "64px",
+              fontSize:      "clamp(40px, 9vw, 64px)",
               letterSpacing: "-0.03em",
               color:         "#F9F9F7",
               lineHeight:    1,
@@ -160,19 +162,21 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false }: Props) 
             ════════════════════════════════════════════════ */}
         <div
           style={{
-            height:          "72px",
+            height:          isVertical ? "auto" : "72px",
+            minHeight:       isVertical ? "56px" : undefined,
             flexShrink:      0,
             backgroundColor: "#989071",
             display:         "flex",
             alignItems:      "center",
             justifyContent:  "space-between",
-            padding:         "0 52px",
+            padding:         isVertical ? "12px clamp(20px, 6vw, 52px)" : "0 52px",
+            gap:             "12px",
           }}
         >
           <span
             style={{
               fontFamily: serif,
-              fontSize:   "24px",
+              fontSize:   "clamp(18px, 5vw, 24px)",
               fontStyle:  "italic",
               color:      "#F9F9F7",
               lineHeight: 1,
@@ -184,10 +188,11 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false }: Props) 
           <span
             style={{
               fontFamily:    sans,
-              fontSize:      "10px",
+              fontSize:      "clamp(9px, 2.5vw, 10px)",
               letterSpacing: "0.15em",
               color:         "#D8D5CF",
               textTransform: "uppercase",
+              whiteSpace:    "nowrap",
             }}
           >
             Anlagekomitee
@@ -204,14 +209,15 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false }: Props) 
             display:         "flex",
             flexDirection:   "column",
             justifyContent:  "flex-start",
-            padding:         "44px 52px",
+            padding:         "clamp(24px, 6vw, 44px) clamp(20px, 6vw, 52px)",
+            minHeight:       isVertical ? "240px" : undefined,
           }}
         >
           {/* Grosse Headline */}
           <span
             style={{
               fontFamily:    serif,
-              fontSize:      "64px",
+              fontSize:      "clamp(40px, 9vw, 64px)",
               letterSpacing: "-0.03em",
               color:         "#1A1916",
               lineHeight:    1,

@@ -81,18 +81,9 @@ export function Section3Timeline({ scrollX, isVertical = false }: Props) {
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  /* ── Compute how many pixels we've scrolled past the trigger point ── */
+  /* ── Desktop: scrolledPast based on horizontal scroll position ── */
   let scrolledPast = 0;
-  if (isVertical) {
-    // In vertical mode, use intersection-based trigger
-    if (containerRef.current && typeof window !== "undefined") {
-      const rect = containerRef.current.getBoundingClientRect();
-      const vh = window.innerHeight;
-      if (rect.top < vh) {
-        scrolledPast = vh - rect.top;
-      }
-    }
-  } else if (containerRef.current && typeof window !== "undefined") {
+  if (!isVertical && containerRef.current && typeof window !== "undefined") {
     const rect = containerRef.current.getBoundingClientRect();
     const vw   = window.innerWidth;
     if (rect.left < vw) {
@@ -100,24 +91,71 @@ export function Section3Timeline({ scrollX, isVertical = false }: Props) {
     }
   }
 
-  const vw        = typeof window !== "undefined" && window.innerWidth > 0 ? window.innerWidth : 1440;
-  // staggerPx ≈ 166 px at 1440 → ≈ 200 ms at comfortable scroll speed
-  const staggerPx = vw * 0.115;
-  // Each step's own animation window
-  const windowPx  = vw * 0.10;
-  // Strip grows over the full reveal range
+  const vwInner   = typeof window !== "undefined" && window.innerWidth > 0 ? window.innerWidth : 1440;
+  const staggerPx = vwInner * 0.115;
+  const windowPx  = vwInner * 0.10;
   const totalRange = (STEPS.length - 1) * staggerPx + windowPx;
-  const stripScale = totalRange > 0
-    ? Math.max(0, Math.min(1, scrolledPast / totalRange))
-    : 0;
+  const stripScale = isVertical
+    ? 1   // no scroll-driven strip animation in vertical (we use per-step IO)
+    : (totalRange > 0 ? Math.max(0, Math.min(1, scrolledPast / totalRange)) : 0);
 
-  // In vertical mode, re-trigger renders on scroll
-  const [, setTick] = useState(0);
+  /* ── Vertical: per-step IntersectionObserver ──
+     stepInView[i] = true once step has entered the viewport.
+     Tracks which step is currently the "active" (most centered) step. */
+  const [stepInView, setStepInView] = useState<boolean[]>(() => STEPS.map(() => false));
+  const [activeStep, setActiveStep] = useState<number>(0);
+  const stepRefs = useRef<(HTMLDivElement | null)[]>([]);
+
   useEffect(() => {
     if (!isVertical) return;
-    const onScroll = () => setTick((t) => t + 1);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+
+    const observers: IntersectionObserver[] = [];
+
+    // (a) Reveal observer — once visible enough, mark stepInView[i] = true
+    const revealObs = new IntersectionObserver(
+      (entries) => {
+        setStepInView((prev) => {
+          const next = [...prev];
+          let changed = false;
+          for (const e of entries) {
+            const idx = stepRefs.current.findIndex((r) => r === e.target);
+            if (idx >= 0 && e.isIntersecting && !next[idx]) {
+              next[idx] = true;
+              changed = true;
+            }
+          }
+          return changed ? next : prev;
+        });
+      },
+      { threshold: 0.2 }
+    );
+    stepRefs.current.forEach((el) => { if (el) revealObs.observe(el); });
+    observers.push(revealObs);
+
+    // (b) Active observer — pick step whose center is closest to viewport center
+    const activeObs = new IntersectionObserver(
+      () => {
+        const vh = window.innerHeight;
+        const center = vh / 2;
+        let bestIdx = activeStep;
+        let bestDist = Infinity;
+        stepRefs.current.forEach((el, i) => {
+          if (!el) return;
+          const r = el.getBoundingClientRect();
+          if (r.bottom < 0 || r.top > vh) return;
+          const elCenter = r.top + r.height / 2;
+          const d = Math.abs(elCenter - center);
+          if (d < bestDist) { bestDist = d; bestIdx = i; }
+        });
+        setActiveStep(bestIdx);
+      },
+      { threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+    stepRefs.current.forEach((el) => { if (el) activeObs.observe(el); });
+    observers.push(activeObs);
+
+    return () => observers.forEach((o) => o.disconnect());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVertical]);
 
   return (
@@ -149,7 +187,8 @@ export function Section3Timeline({ scrollX, isVertical = false }: Props) {
           display:       "flex",
           flexDirection: "row",
           alignItems:    "stretch",
-          width:         "clamp(460px, 50vw, 760px)",
+          width:         isVertical ? "100%" : "clamp(460px, 50vw, 760px)",
+          maxWidth:      isVertical ? "760px" : undefined,
         }}
       >
         {/* ════════════════════════════════════════════
@@ -166,7 +205,7 @@ export function Section3Timeline({ scrollX, isVertical = false }: Props) {
             transform:       `scaleY(${stripScale.toFixed(4)})`,
             transformOrigin: "top",
             willChange:      "transform",
-            marginRight:     "36px",
+            marginRight:     isVertical ? "16px" : "36px",
           }}
         >
           <div style={{ height: "40%", backgroundColor: C.line }} />
@@ -185,18 +224,45 @@ export function Section3Timeline({ scrollX, isVertical = false }: Props) {
           }}
         >
           {STEPS.map((step, i) => {
-            const sp        = getItemP(scrolledPast, i, staggerPx, windowPx);
+            // Desktop uses scroll-driven progress; vertical uses IO state
+            const sp = isVertical
+              ? (stepInView[i] ? 1 : 0)
+              : getItemP(scrolledPast, i, staggerPx, windowPx);
+
+            const isActive  = isVertical && activeStep === i;
             const numColor  = step.accent ? C.dark  : C.line;
             const descColor = step.accent ? C.charcoal : C.stone;
+
+            // Ordinal opacity boost when active in vertical mode
+            const numOpacity = isVertical
+              ? (isActive ? 1 : (step.accent ? 0.6 : 0.4))
+              : 1;
 
             return (
               <React.Fragment key={step.num}>
 
-                {/* ── Separator before step 03 ── */}
+                {/* ── Separator between steps (vertical only, not before first) ── */}
+                {isVertical && i > 0 && (
+                  <div
+                    style={{
+                      width:           "100%",
+                      height:          "1px",
+                      backgroundColor: C.line,
+                      opacity:         stepInView[i] ? 0.5 : 0,
+                      transition:      "opacity 600ms ease-out",
+                      marginTop:       "8px",
+                      marginBottom:    "8px",
+                    }}
+                  />
+                )}
+
+                {/* ── Section separator before step 03 (both modes) ── */}
                 {i === 2 && (
                   <div
                     style={{
-                      opacity:       getItemP(scrolledPast, 1.6, staggerPx, windowPx),
+                      opacity:       isVertical
+                        ? (stepInView[i] ? 1 : 0)
+                        : getItemP(scrolledPast, 1.6, staggerPx, windowPx),
                       display:       "flex",
                       flexDirection: "row",
                       alignItems:    "center",
@@ -204,6 +270,7 @@ export function Section3Timeline({ scrollX, isVertical = false }: Props) {
                       paddingTop:    "clamp(10px, 1.6vh, 22px)",
                       paddingBottom: "clamp(10px, 1.6vh, 22px)",
                       willChange:    "opacity",
+                      transition:    isVertical ? "opacity 600ms ease-out" : undefined,
                     }}
                   >
                     <div
@@ -217,7 +284,7 @@ export function Section3Timeline({ scrollX, isVertical = false }: Props) {
                     <span
                       style={{
                         fontFamily:    sans,
-                        fontSize:      "13px",
+                        fontSize:      isVertical ? "10px" : "13px",
                         letterSpacing: "0.2em",
                         color:         C.dark,
                         textTransform: "uppercase" as const,
@@ -228,44 +295,56 @@ export function Section3Timeline({ scrollX, isVertical = false }: Props) {
                   </div>
                 )}
 
-                {/* ── Step row: ordinal + title + description ── */}
+                {/* ── Step row ── */}
                 <div
+                  ref={(el) => { stepRefs.current[i] = el; }}
                   style={{
                     opacity:         sp,
-                    transform:       `scale(${(0.92 + 0.08 * sp).toFixed(4)})`,
+                    transform:       isVertical
+                      ? `translateY(${(1 - sp) * 30}px)`
+                      : `scale(${(0.92 + 0.08 * sp).toFixed(4)})`,
                     transformOrigin: "left center",
                     willChange:      "opacity, transform",
                     display:         "flex",
-                    flexDirection:   "row",
+                    flexDirection:   isVertical ? "column" : "row",
                     alignItems:      "flex-start",
-                    gap:             "20px",
+                    gap:             isVertical ? "4px" : "20px",
+                    transition:      isVertical
+                      ? "opacity 600ms cubic-bezier(0.16, 1, 0.3, 1), transform 600ms cubic-bezier(0.16, 1, 0.3, 1)"
+                      : undefined,
+                    paddingLeft:     isVertical ? "12px" : undefined,
+                    borderLeft:      isVertical
+                      ? `2px solid ${isActive ? C.dark : "transparent"}`
+                      : undefined,
                   }}
                 >
-                  {/* Large ordinal number */}
+                  {/* Ordinal number */}
                   <span
                     style={{
                       fontFamily: serif,
-                      fontSize:   "120px",
+                      fontSize:   isVertical ? "32px" : "120px",
                       fontWeight: 400,
                       color:      numColor,
-                      lineHeight: 0.82,
+                      opacity:    numOpacity,
+                      lineHeight: isVertical ? 1 : 0.82,
                       flexShrink: 0,
-                      minWidth:   "130px",
+                      minWidth:   isVertical ? undefined : "130px",
                       display:    "block",
+                      transition: isVertical ? "opacity 350ms ease-out" : undefined,
                     }}
                   >
                     {step.num}
                   </span>
 
                   {/* Title + description */}
-                  <div style={{ paddingTop: "12px" }}>
+                  <div style={{ paddingTop: isVertical ? "0" : "12px", minWidth: 0, width: isVertical ? "100%" : undefined }}>
                     <span
                       style={{
                         fontFamily: serif,
-                        fontSize:   "28px",
+                        fontSize:   isVertical ? "20px" : "28px",
                         color:      C.dark,
                         display:    "block",
-                        lineHeight: 1.15,
+                        lineHeight: 1.2,
                       }}
                     >
                       {step.title}
@@ -273,7 +352,7 @@ export function Section3Timeline({ scrollX, isVertical = false }: Props) {
                     <span
                       style={{
                         fontFamily: sans,
-                        fontSize:   "16px",
+                        fontSize:   isVertical ? "13px" : "16px",
                         color:      descColor,
                         display:    "block",
                         marginTop:  "6px",
@@ -307,7 +386,7 @@ export function Section3Timeline({ scrollX, isVertical = false }: Props) {
             <span
               style={{
                 fontFamily: sans,
-                fontSize:   "14px",
+                fontSize:   isVertical ? "12px" : "14px",
                 color:      C.warm,
                 fontStyle:  "italic",
               }}
