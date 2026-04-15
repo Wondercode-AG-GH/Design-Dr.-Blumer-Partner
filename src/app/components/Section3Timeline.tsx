@@ -1,6 +1,8 @@
 import React, { useRef, useState, useEffect } from "react";
 import { RotateCcw } from "lucide-react";
 import { LAYOUT } from "../layout";
+import { AnlageprozessStepOrdinal, ORDINAL_FONT_SIZE } from "./AnlageprozessStepOrdinal";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 /* ─── Design tokens ─── */
 const C = {
@@ -73,9 +75,21 @@ interface Props {
   /** Passed from parent to drive re-renders on every scroll frame. */
   scrollX: number;
   isVertical?: boolean;
+  /** When true, step ordinals unmount so the detail-view overlay can own the FLIP targets */
+  isDetailMode?: boolean;
 }
 
-export function Section3Timeline({ scrollX, isVertical = false }: Props) {
+export function Section3Timeline({ scrollX, isVertical = false, isDetailMode = false }: Props) {
+  const descriptionsFading = isDetailMode;
+  const descriptionsHidden = isDetailMode;
+
+  const reducedMotion = usePrefersReducedMotion();
+  /* FLIP runs only on desktop (horizontal) + when reduced-motion is OFF.
+     The main-page step ordinals use layoutId; when the user triggers detail,
+     they UNMOUNT (conditional rendering), and the overlay's ordinals mount
+     with matching layoutIds — Framer Motion animates the positional change. */
+  const canFlip = !isVertical && !reducedMotion;
+  const enableFlip = canFlip;
   // scrollX is intentionally referenced so prop-change triggers re-renders
   void scrollX;
 
@@ -260,17 +274,25 @@ export function Section3Timeline({ scrollX, isVertical = false }: Props) {
                 {i === 2 && (
                   <div
                     style={{
-                      opacity:       isVertical
-                        ? (stepInView[i] ? 1 : 0)
-                        : getItemP(scrolledPast, 1.6, staggerPx, windowPx),
+                      opacity: descriptionsFading || descriptionsHidden
+                        ? 0
+                        : (isVertical
+                          ? (stepInView[i] ? 1 : 0)
+                          : getItemP(scrolledPast, 1.6, staggerPx, windowPx)),
+                      maxHeight: descriptionsFading || descriptionsHidden ? "0" : "100px",
+                      marginTop: descriptionsFading || descriptionsHidden ? "0" : undefined,
+                      marginBottom: descriptionsFading || descriptionsHidden ? "0" : undefined,
                       display:       "flex",
                       flexDirection: "row",
                       alignItems:    "center",
                       gap:           "14px",
-                      paddingTop:    "clamp(10px, 1.6vh, 22px)",
-                      paddingBottom: "clamp(10px, 1.6vh, 22px)",
-                      willChange:    "opacity",
-                      transition:    isVertical ? "opacity 600ms ease-out" : undefined,
+                      paddingTop:    descriptionsFading || descriptionsHidden ? "0" : "clamp(10px, 1.6vh, 22px)",
+                      paddingBottom: descriptionsFading || descriptionsHidden ? "0" : "clamp(10px, 1.6vh, 22px)",
+                      overflow:      "hidden",
+                      willChange:    "opacity, max-height",
+                      transition:    descriptionsFading || descriptionsHidden
+                        ? "opacity 400ms cubic-bezier(0.4, 0, 0.2, 1), max-height 500ms cubic-bezier(0.4, 0, 0.2, 1), padding 500ms cubic-bezier(0.4, 0, 0.2, 1)"
+                        : (isVertical ? "opacity 600ms ease-out" : undefined),
                     }}
                   >
                     <div
@@ -318,23 +340,43 @@ export function Section3Timeline({ scrollX, isVertical = false }: Props) {
                       : undefined,
                   }}
                 >
-                  {/* Ordinal number */}
-                  <span
-                    style={{
-                      fontFamily: serif,
-                      fontSize:   isVertical ? "32px" : "120px",
-                      fontWeight: 400,
-                      color:      numColor,
-                      opacity:    numOpacity,
-                      lineHeight: isVertical ? 1 : 0.82,
-                      flexShrink: 0,
-                      minWidth:   isVertical ? undefined : "130px",
-                      display:    "block",
-                      transition: isVertical ? "opacity 350ms ease-out" : undefined,
-                    }}
-                  >
-                    {step.num}
-                  </span>
+                  {/* Ordinal number — shared FLIP target on desktop */}
+                  {isVertical ? (
+                    <span
+                      style={{
+                        fontFamily: serif,
+                        fontSize:   "32px",
+                        fontWeight: 400,
+                        color:      numColor,
+                        opacity:    numOpacity,
+                        lineHeight: 1,
+                        flexShrink: 0,
+                        display:    "block",
+                        transition: "opacity 350ms ease-out",
+                      }}
+                    >
+                      {step.num}
+                    </span>
+                  ) : (
+                    <div
+                      style={{
+                        flexShrink: 0,
+                        minWidth: `${ORDINAL_FONT_SIZE + 40}px`,
+                        minHeight: `${ORDINAL_FONT_SIZE}px`,
+                      }}
+                    >
+                      {/* Ordinal unmounts in detail mode → Overlay owns the FLIP target.
+                          Framer Motion matches layoutId across the portal via LayoutGroup. */}
+                      {!isDetailMode && (
+                        <AnlageprozessStepOrdinal
+                          num={step.num}
+                          color={numColor}
+                          opacity={numOpacity}
+                          enableFlip={enableFlip}
+                        />
+                      )}
+                    </div>
+                  )}
 
                   {/* Title + description */}
                   <div style={{ paddingTop: isVertical ? "0" : "12px", minWidth: 0, width: isVertical ? "100%" : undefined }}>
@@ -357,6 +399,9 @@ export function Section3Timeline({ scrollX, isVertical = false }: Props) {
                         display:    "block",
                         marginTop:  "6px",
                         lineHeight: 1.5,
+                        opacity: descriptionsHidden ? 0 : descriptionsFading ? 0 : 1,
+                        transform: descriptionsFading ? "translateY(4px)" : "translateY(0)",
+                        transition: "opacity 500ms cubic-bezier(0.4, 0, 0.2, 1), transform 500ms cubic-bezier(0.4, 0, 0.2, 1)",
                       }}
                     >
                       {step.desc}

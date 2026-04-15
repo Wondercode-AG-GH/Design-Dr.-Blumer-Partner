@@ -1,5 +1,4 @@
 import { HeroExpandingImage, ScrollFade } from "./ScrollAnimations";
-import { CtaButton } from "./CtaButton";
 import { ExpandableBody } from "./ExpandableBody";
 import philosophyImg from "figma:asset/a44e63e47eecf6c5811f4525d593bd929e31be63.png";
 import { LAYOUT, getLayout, getTextColumnStyle, SPACING } from "../layout";
@@ -75,7 +74,64 @@ export function Section2Anlagephilosophie({ scrollX, isVertical = false, breakpo
         id="section-anlagephilosophie"
         style={{ backgroundColor: C.bg }}
       >
-        {/* Image with quote overlay */}
+        {/* Text content — comes FIRST on mobile/tablet */}
+        <div style={{ ...textColStyle }}>
+          <ScrollFade scrollX={0} isVertical yOffset={16}>
+            <span
+              style={{
+                fontFamily: sans,
+                fontSize: "11px",
+                letterSpacing: "0.22em",
+                color: C.stone,
+                display: "block",
+                textTransform: "uppercase",
+              }}
+            >
+              Anlagephilosophie
+            </span>
+
+            <div
+              style={{
+                width: "32px",
+                height: "1.5px",
+                backgroundColor: C.dark,
+                marginTop: SPACING.eyebrowToAccent,
+              }}
+            />
+          </ScrollFade>
+
+          <ScrollFade scrollX={0} isVertical yOffset={24}>
+            <h2
+              style={{
+                fontFamily: serif,
+                fontSize: breakpoint === "mobile" ? "clamp(36px, 10vw, 48px)" : "clamp(48px, 6vw, 68px)",
+                lineHeight: 0.94,
+                color: C.dark,
+                letterSpacing: "-0.03em",
+                marginTop: SPACING.accentToHeadline,
+              }}
+            >
+              Analyse entscheidet.
+              <br />
+              <em>Nicht Stimmung.</em>
+            </h2>
+          </ScrollFade>
+
+          <ScrollFade scrollX={0} isVertical yOffset={20}>
+            <div style={{ marginTop: SPACING.headlineToBody, paddingBottom: "32px" }}>
+              <ExpandableBody
+                paragraphs={BODY_PARAGRAPHS}
+                visibleCount={1}
+                fontSize={breakpoint === "mobile" ? "14px" : "13px"}
+                lineHeight={1.7}
+                gap="14px"
+                maxWidth={layout.bodyMaxWidth}
+              />
+            </div>
+          </ScrollFade>
+        </div>
+
+        {/* Image with quote overlay — comes AFTER text on mobile/tablet */}
         <div
           style={{
             width: "100%",
@@ -129,71 +185,6 @@ export function Section2Anlagephilosophie({ scrollX, isVertical = false, breakpo
               {"\u00AB"}Ihr Vermögen verdient bessere Gründe als ein Bauchgefühl.{"\u00BB"}
             </p>
           </div>
-        </div>
-
-        {/* Text content */}
-        <div style={{ ...textColStyle }}>
-          <ScrollFade scrollX={0} isVertical yOffset={16}>
-            <span
-              style={{
-                fontFamily: sans,
-                fontSize: "11px",
-                letterSpacing: "0.22em",
-                color: C.stone,
-                display: "block",
-                textTransform: "uppercase",
-              }}
-            >
-              Anlagephilosophie
-            </span>
-
-            <div
-              style={{
-                width: "32px",
-                height: "1.5px",
-                backgroundColor: C.dark,
-                marginTop: SPACING.eyebrowToAccent,
-              }}
-            />
-          </ScrollFade>
-
-          <ScrollFade scrollX={0} isVertical yOffset={24}>
-            <h2
-              style={{
-                fontFamily: serif,
-                fontSize: breakpoint === "mobile" ? "clamp(36px, 10vw, 48px)" : "clamp(48px, 6vw, 68px)",
-                lineHeight: 0.94,
-                color: C.dark,
-                letterSpacing: "-0.03em",
-                marginTop: SPACING.accentToHeadline,
-              }}
-            >
-              Analyse entscheidet.
-              <br />
-              <em>Nicht Stimmung.</em>
-            </h2>
-          </ScrollFade>
-
-          <ScrollFade scrollX={0} isVertical yOffset={20}>
-            <div style={{ marginTop: SPACING.headlineToBody }}>
-              <ExpandableBody
-                paragraphs={BODY_PARAGRAPHS}
-                visibleCount={1}
-                fontSize={breakpoint === "mobile" ? "14px" : "13px"}
-                lineHeight={1.7}
-                gap="14px"
-                maxWidth={layout.bodyMaxWidth}
-              />
-            </div>
-          </ScrollFade>
-
-          <ScrollFade scrollX={0} isVertical yOffset={16}>
-            <div style={{ marginTop: SPACING.bodyToCta, paddingBottom: "48px" }}>
-              <CtaButton href="/anlagephilosophie">
-                Mehr zur Philosophie
-              </CtaButton>
-            </div>
-          </ScrollFade>
         </div>
       </section>
     );

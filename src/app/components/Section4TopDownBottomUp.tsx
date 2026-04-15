@@ -1,4 +1,6 @@
 import { useRef, useState, useEffect } from "react";
+import { motion } from "motion/react";
+import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
 const serif = "'Cormorant Garamond', serif";
 const sans  = "'Inter', sans-serif";
@@ -38,11 +40,16 @@ function AccentRow({
 interface Props {
   scrollX: number;
   isVertical?: boolean;
+  /** When true (Anlagestrategien subpage open), the FLIP'd headlines unmount
+   *  so the subpage's detail instances become the Framer Motion targets. */
+  isDetailMode?: boolean;
 }
 
-export function Section4TopDownBottomUp({ scrollX, isVertical = false }: Props) {
+export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailMode = false }: Props) {
   const panelRef              = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const reducedMotion         = usePrefersReducedMotion();
+  const enableFlip            = !isVertical && !reducedMotion;
 
   useEffect(() => {
     if (visible || !panelRef.current) return;
@@ -128,19 +135,39 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false }: Props) 
             Globale Perspektive
           </span>
 
-          {/* Grosse Headline */}
-          <span
-            style={{
-              fontFamily:    serif,
-              fontSize:      "clamp(40px, 9vw, 64px)",
-              letterSpacing: "-0.03em",
-              color:         "#F9F9F7",
-              lineHeight:    1,
-              display:       "block",
-            }}
-          >
-            Top-Down
-          </span>
+          {/* FLIP anchor — unmounts in detail mode so the sub-page instance
+              becomes Framer Motion's target via shared layoutId. */}
+          {!isDetailMode && (
+            enableFlip ? (
+              <motion.span
+                layoutId="anlagestrategien-headline-topdown"
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                style={{
+                  fontFamily:    serif,
+                  fontSize:      "clamp(40px, 9vw, 64px)",
+                  letterSpacing: "-0.03em",
+                  color:         "#F9F9F7",
+                  lineHeight:    1,
+                  display:       "block",
+                }}
+              >
+                Top-Down
+              </motion.span>
+            ) : (
+              <span
+                style={{
+                  fontFamily:    serif,
+                  fontSize:      "clamp(40px, 9vw, 64px)",
+                  letterSpacing: "-0.03em",
+                  color:         "#F9F9F7",
+                  lineHeight:    1,
+                  display:       "block",
+                }}
+              >
+                Top-Down
+              </span>
+            )
+          )}
 
           {/* Drei Zeilen */}
           <div
@@ -213,19 +240,38 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false }: Props) 
             minHeight:       isVertical ? "240px" : undefined,
           }}
         >
-          {/* Grosse Headline */}
-          <span
-            style={{
-              fontFamily:    serif,
-              fontSize:      "clamp(40px, 9vw, 64px)",
-              letterSpacing: "-0.03em",
-              color:         "#1A1916",
-              lineHeight:    1,
-              display:       "block",
-            }}
-          >
-            Bottom-Up
-          </span>
+          {/* FLIP anchor — unmounts in detail mode */}
+          {!isDetailMode && (
+            enableFlip ? (
+              <motion.span
+                layoutId="anlagestrategien-headline-bottomup"
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.08 }}
+                style={{
+                  fontFamily:    serif,
+                  fontSize:      "clamp(40px, 9vw, 64px)",
+                  letterSpacing: "-0.03em",
+                  color:         "#1A1916",
+                  lineHeight:    1,
+                  display:       "block",
+                }}
+              >
+                Bottom-Up
+              </motion.span>
+            ) : (
+              <span
+                style={{
+                  fontFamily:    serif,
+                  fontSize:      "clamp(40px, 9vw, 64px)",
+                  letterSpacing: "-0.03em",
+                  color:         "#1A1916",
+                  lineHeight:    1,
+                  display:       "block",
+                }}
+              >
+                Bottom-Up
+              </span>
+            )
+          )}
 
           {/* Kleine Überschrift */}
           <span
