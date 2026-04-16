@@ -89,7 +89,8 @@ export function CtaButton({
     );
   }
 
-  /* Ghost variant (default desktop) */
+  /* Ghost variant (default desktop) — subtle hover: border darkens,
+     bg gets a light tint, arrow nudges right. Text color is preserved. */
   return (
     <a
       href={href}
@@ -99,8 +100,8 @@ export function CtaButton({
         uppercase tracking-[0.16em]
         border border-[#D8D5CF]
         rounded-none
-        transition-all duration-500 ease-[cubic-bezier(0.25,0.1,0.25,1)]
-        hover:bg-[#1A1916] hover:text-[#F9F9F7] hover:border-[#1A1916]
+        transition-[background-color,border-color] duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)]
+        hover:border-[#1A1916] hover:bg-[#F2F1EC]
         active:scale-[0.98]
         px-6 py-3 md:px-8 md:py-4
         text-[10px] md:text-[11px]
@@ -118,7 +119,7 @@ export function CtaButton({
       <span>{children}</span>
       {arrow && (
         <span
-          className="inline-block transition-transform duration-500 group-hover:translate-x-1"
+          className="inline-block transition-transform duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-1.5"
           aria-hidden
         >
           →

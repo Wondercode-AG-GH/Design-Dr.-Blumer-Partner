@@ -94,6 +94,70 @@ const BODY = [
 ];
 
 /* ═══════════════════════════════════════════════════════════
+   Build `vorname.nachname@telliancapital.ch` from a display name.
+   Strips titles (Dr., Prof.), replaces umlauts, lowercases.
+   ═══════════════════════════════════════════════════════════ */
+function teamEmail(name: string): string {
+  const cleaned = name
+    .replace(/^(Dr\.|Prof\.)\s+/i, "")
+    .toLowerCase()
+    .replace(/ä/g, "ae")
+    .replace(/ö/g, "oe")
+    .replace(/ü/g, "ue")
+    .replace(/ß/g, "ss");
+  const parts = cleaned.split(/\s+/);
+  if (parts.length < 2) return `${parts[0]}@telliancapital.ch`;
+  const first = parts[0];
+  const last = parts[parts.length - 1];
+  return `${first}.${last}@telliancapital.ch`;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   SEND MESSAGE LINK — accent-line + label, mailto: action
+   ═══════════════════════════════════════════════════════════ */
+function SendMessageLink({ email }: { email: string }) {
+  const [hover, setHover] = useState(false);
+  const accent = hover ? C.dark : C.stone;
+  return (
+    <a
+      href={`mailto:${email}`}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "6px",
+        textDecoration: "none",
+      }}
+    >
+      <span
+        aria-hidden
+        style={{
+          display: "inline-block",
+          width: hover ? "24px" : "14px",
+          height: "0.5px",
+          backgroundColor: accent,
+          transition:
+            "width 300ms cubic-bezier(0.16, 1, 0.3, 1), background-color 300ms cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
+      />
+      <span
+        style={{
+          fontFamily: sans,
+          fontSize: "10px",
+          letterSpacing: "0.1em",
+          textTransform: "uppercase",
+          color: accent,
+          transition: "color 300ms cubic-bezier(0.16, 1, 0.3, 1)",
+        }}
+      >
+        Nachricht senden
+      </span>
+    </a>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════
    PORTRAIT CARD — used in filmstrip (desktop) & grid (vertical)
    ═══════════════════════════════════════════════════════════ */
 function PortraitCard({
@@ -156,6 +220,18 @@ function PortraitCard({
         >
           {member.role}
         </span>
+
+        {/* Divider + Send-message mailto link */}
+        <div
+          style={{
+            height: "0.5px",
+            backgroundColor: C.line,
+            marginTop: "10px",
+          }}
+        />
+        <div style={{ marginTop: "8px" }}>
+          <SendMessageLink email={teamEmail(member.name)} />
+        </div>
       </div>
     </div>
   );

@@ -3,6 +3,11 @@ import { createPortal } from "react-dom";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import type { Breakpoint } from "./useBreakpoint";
+import {
+  LEGAL_PATHS,
+  LEGAL_LINK_LABELS,
+  type LegalPath,
+} from "../data/legalPages";
 
 /* ─── Design tokens ─── */
 const C = {
@@ -521,9 +526,227 @@ function ContactForm({ stack = false }: { stack?: boolean } = {}) {
 interface Section6Props {
   isVertical?: boolean;
   breakpoint?: Breakpoint;
+  onOpenLegal?: (path: LegalPath) => void;
 }
 
-export function Section6Kontakt({ isVertical = false, breakpoint = "desktop" }: Section6Props = {}) {
+/* ─── Legal links row — used in both vertical and desktop layouts ─── */
+function LegalLinksRow({
+  onOpenLegal,
+  align = "left",
+}: {
+  onOpenLegal?: (path: LegalPath) => void;
+  align?: "left" | "center";
+}) {
+  return (
+    <div
+      style={{
+        marginTop: "16px",
+        paddingTop: "16px",
+        borderTop: `0.5px solid ${C.borderTertiary}`,
+        display: "flex",
+        flexWrap: "wrap",
+        alignItems: "center",
+        justifyContent: align === "center" ? "center" : "flex-start",
+        columnGap: "10px",
+        rowGap: "6px",
+      }}
+    >
+      {LEGAL_PATHS.map((path, i) => (
+        <span key={path} style={{ display: "inline-flex", alignItems: "center", gap: "10px" }}>
+          {i > 0 && (
+            <span
+              aria-hidden
+              style={{
+                fontFamily: sans,
+                fontSize: "10px",
+                color: C.muted,
+                lineHeight: 1,
+              }}
+            >
+              ·
+            </span>
+          )}
+          <a
+            href={path}
+            onClick={(e) => {
+              if (!onOpenLegal) return;
+              e.preventDefault();
+              onOpenLegal(path);
+            }}
+            style={{
+              fontFamily: sans,
+              fontSize: "10px",
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+              color: C.textTertiary,
+              textDecoration: "none",
+              transition: "color 300ms cubic-bezier(0.16, 1, 0.3, 1)",
+              outline: "none",
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.color = C.textPrimary)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = C.textTertiary)}
+            onFocus={(e) => (e.currentTarget.style.color = C.textPrimary)}
+            onBlur={(e) => (e.currentTarget.style.color = C.textTertiary)}
+          >
+            {LEGAL_LINK_LABELS[path]}
+          </a>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+/* ─── Mobile-only: "Auf Karte anzeigen" as accent-line link (primary action) ─── */
+function MapLinkMobile({
+  onClick,
+  ariaExpanded,
+  buttonRef,
+}: {
+  onClick: () => void;
+  ariaExpanded: boolean;
+  buttonRef: React.RefObject<HTMLButtonElement | null>;
+}) {
+  const [hover, setHover] = useState(false);
+  const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
+  return (
+    <button
+      ref={buttonRef}
+      onClick={onClick}
+      aria-expanded={ariaExpanded}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onFocus={() => setHover(true)}
+      onBlur={() => setHover(false)}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        background: "transparent",
+        border: "none",
+        cursor: "pointer",
+        padding: "14px 0",
+        minHeight: "44px",
+        marginTop: "8px",
+        outline: "none",
+      }}
+    >
+      <span
+        aria-hidden
+        style={{
+          display: "inline-block",
+          width: hover ? "24px" : "14px",
+          height: "0.5px",
+          backgroundColor: hover ? C.textPrimary : C.textTertiary,
+          transition: `width 300ms ${EASE}, background-color 300ms ${EASE}`,
+          flexShrink: 0,
+        }}
+      />
+      <span
+        style={{
+          fontFamily: sans,
+          fontSize: "11px",
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          color: C.textPrimary,
+          lineHeight: 1,
+        }}
+      >
+        Auf Karte anzeigen
+      </span>
+    </button>
+  );
+}
+
+/* ─── Mobile-only: vertical stacked legal links, each with its own accent-line ─── */
+function LegalLinksStackedMobile({
+  onOpenLegal,
+}: {
+  onOpenLegal?: (path: LegalPath) => void;
+}) {
+  return (
+    <div
+      style={{
+        marginTop: "24px",
+        paddingTop: "20px",
+        borderTop: `0.5px solid ${C.borderTertiary}`,
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
+      {LEGAL_PATHS.map((path) => (
+        <LegalLinkMobileRow
+          key={path}
+          path={path}
+          label={LEGAL_LINK_LABELS[path]}
+          onOpenLegal={onOpenLegal}
+        />
+      ))}
+    </div>
+  );
+}
+
+function LegalLinkMobileRow({
+  path,
+  label,
+  onOpenLegal,
+}: {
+  path: LegalPath;
+  label: string;
+  onOpenLegal?: (path: LegalPath) => void;
+}) {
+  const [hover, setHover] = useState(false);
+  const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
+  return (
+    <a
+      href={path}
+      onClick={(e) => {
+        if (!onOpenLegal) return;
+        e.preventDefault();
+        onOpenLegal(path);
+      }}
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      onFocus={() => setHover(true)}
+      onBlur={() => setHover(false)}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "12px",
+        padding: "10px 0",
+        minHeight: "36px",
+        textDecoration: "none",
+        outline: "none",
+      }}
+    >
+      <span
+        aria-hidden
+        style={{
+          display: "inline-block",
+          width: hover ? "22px" : "14px",
+          height: "0.5px",
+          backgroundColor: hover ? C.textSecondary : C.muted,
+          transition: `width 300ms ${EASE}, background-color 300ms ${EASE}`,
+          flexShrink: 0,
+        }}
+      />
+      <span
+        style={{
+          fontFamily: sans,
+          fontSize: "10px",
+          letterSpacing: "0.16em",
+          textTransform: "uppercase",
+          color: hover ? C.textPrimary : C.textTertiary,
+          transition: `color 300ms ${EASE}`,
+          lineHeight: 1,
+        }}
+      >
+        {label}
+      </span>
+    </a>
+  );
+}
+
+export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", onOpenLegal }: Section6Props = {}) {
   const [mapOpen, setMapOpen] = useState(false);
   const openBtnRef = useRef<HTMLButtonElement>(null);
 
@@ -656,6 +879,13 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop" }: 
             Löwenstrasse 1, CH-8001 Zürich
           </span>
 
+          {/* Map link — directly under address, part of the address block */}
+          <MapLinkMobile
+            buttonRef={openBtnRef}
+            onClick={() => setMapOpen(true)}
+            ariaExpanded={mapOpen}
+          />
+
           {/* Tel + Mail as touch-friendly rows (44px min height) */}
           <div style={{ display: "flex", flexDirection: "column", marginTop: "8px" }}>
             <a
@@ -691,43 +921,8 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop" }: 
           </div>
         </div>
 
-        {/* "Auf Karte anzeigen" link — opens shared MapOverlay */}
-        <button
-          ref={openBtnRef}
-          onClick={() => setMapOpen(true)}
-          aria-expanded={mapOpen}
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-            background: "transparent",
-            border: "none",
-            cursor: "pointer",
-            padding: "12px 4px",     // 44px min touch target on mobile
-            minHeight: "44px",
-            fontFamily: sans,
-            fontSize: "10px",
-            letterSpacing: "1px",
-            textTransform: "uppercase",
-            color: C.textTertiary,
-            marginTop: "16px",
-            transition: "color 0.3s ease",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = C.textSecondary)}
-          onMouseLeave={(e) => (e.currentTarget.style.color = C.textTertiary)}
-        >
-          <span
-            style={{
-              display: "inline-block",
-              width: "4px",
-              height: "4px",
-              borderRadius: "50%",
-              backgroundColor: "currentColor",
-            }}
-            aria-hidden
-          />
-          Auf Karte anzeigen
-        </button>
+        {/* Legal links — vertical stack, separated from address block by top border */}
+        <LegalLinksStackedMobile onOpenLegal={onOpenLegal} />
 
         {/* Footer */}
         <div
@@ -910,6 +1105,9 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop" }: 
               info@telliancapital.ch
             </a>
           </div>
+
+          {/* Legal links — below contact row */}
+          <LegalLinksRow onOpenLegal={onOpenLegal} />
         </div>
       </div>
 

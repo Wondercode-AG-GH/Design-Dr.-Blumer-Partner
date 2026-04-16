@@ -11,6 +11,8 @@ import { ANLAGEPROZESS_STEPS } from "./data/anlageprozessSteps";
 import { AnlageprozessStepOrdinal, ORDINAL_FONT_SIZE } from "./components/AnlageprozessStepOrdinal";
 import { usePrefersReducedMotion } from "./components/usePrefersReducedMotion";
 import { Navigation } from "./components/Navigation";
+import { LoginOverlay } from "./components/LoginOverlay";
+import { LegalPage, useLegalRoute } from "./components/LegalPage";
 import { useHorizontalScroll } from "./components/useHorizontalScroll";
 import { useBreakpoint } from "./components/useBreakpoint";
 import {
@@ -96,22 +98,36 @@ function PreloadScreen({ onComplete }: { onComplete: () => void }) {
           : { duration: 0 }
       }
     >
-      <span
+      <svg
+        viewBox="0 0 461.35 275.61"
+        xmlns="http://www.w3.org/2000/svg"
+        role="img"
+        aria-label="Tellian Capital"
+        fill="currentColor"
         style={{
-          fontFamily: sans,
-          fontSize: "clamp(32px, 8vw, 60px)",
-          letterSpacing: "5px",
+          width: "clamp(440px, 64vw, 720px)",
+          height: "auto",
           color: "#FFFFFF",
           opacity: textVisible ? 1 : 0,
           transition: textVisible ? "opacity 0.6s ease-out" : "none",
           userSelect: "none",
-          whiteSpace: "nowrap",
         }}
       >
-        <span style={{ fontWeight: 700 }}>TELLIAN</span>
-        {" "}
-        <span style={{ fontWeight: 400 }}>CAPITAL</span>
-      </span>
+        <path d="M144.22,126.17c0,6.59.99,8.74,4.24,9.16v1.26c-2.3-.21-4.97-.31-7.38-.31s-4.97.1-7.32.31v-1.26c3.24-.42,4.19-2.56,4.19-9.16v-22.34c-5.86,0-8.89,1.1-10.25,6.49h-1.78c.47-2.56.79-6.07.89-9.1,2.56.21,6.12.31,10.04.31h8.47c3.82,0,7.43-.1,9.99-.31.11,3.03.52,6.28.94,9.1h-1.78c-1.26-5.28-3.92-6.49-10.25-6.49v22.34Z" />
+        <path d="M169.33,116.49h2.98c3.45,0,6.17-.26,7.17-3.92h1.67c-.32,1.83-.47,3.66-.47,5.39,0,1.94.21,3.71.47,5.28h-1.73c-1.26-3.56-3.14-3.92-7.01-3.92h-3.09v6.59c0,3.71.26,5.81,1.05,6.96.52.94,1.57,1.36,3.45,1.36,6.17,0,9.63-3.09,11.88-8.06l1.73.94c-1.73,3.87-2.67,6.64-3.45,9.78-2.93-.31-7.11-.47-10.93-.47h-6.54c-2.35,0-5.44.05-7.59.16v-1.26c3.24-.42,4.19-2.62,4.19-9.16v-14.33c0-6.59-.94-8.74-4.19-9.21v-1.26c1.83.11,4.13.16,6.96.16h6.96c4.19,0,7.06-.05,10.2-.31.05,2.98.47,6.02,1.15,8.89l-1.62.52c-1.78-5.13-4.13-6.7-11.35-6.7h-1.88v12.56Z" />
+        <path d="M197.95,101.69c2.67,0,4.45-.05,7.48-.32v1.26c-3.09.47-4.03,2.62-4.03,9.21v14.6c0,3.09.37,5.34.99,6.33.52.99,1.57,1.47,3.5,1.47,5.75,0,9-2.25,11.88-8.06l1.67.89c-1.62,3.92-2.56,6.7-3.4,9.84-3.03-.26-7.74-.47-11.88-.47h-6.85c-1.93,0-4.55.05-6.33.16v-1.26c3.24-.42,4.19-2.56,4.19-9.16v-14.33c0-6.59-.94-8.74-4.19-9.21v-1.26c2.62.26,4.24.32,6.96.32Z" />
+        <path d="M228.5,101.69c2.67,0,4.45-.05,7.48-.32v1.26c-3.09.47-4.03,2.62-4.03,9.21v14.6c0,3.09.37,5.34.99,6.33.52.99,1.57,1.47,3.5,1.47,5.75,0,9-2.25,11.88-8.06l1.67.89c-1.62,3.92-2.56,6.7-3.4,9.84-3.03-.26-7.74-.47-11.88-.47h-6.85c-1.94,0-4.55.05-6.33.16v-1.26c3.24-.42,4.18-2.56,4.18-9.16v-14.33c0-6.59-.94-8.74-4.18-9.21v-1.26c2.62.26,4.24.32,6.96.32Z" />
+        <path d="M266.69,136.58c-3.14-.26-4.39-.31-7.06-.31s-4.71.1-7.53.31v-1.26c3.24-.42,4.18-2.56,4.18-9.16v-14.33c0-6.59-.94-8.74-4.18-9.21v-1.26c3.14.26,4.6.32,7.17.32s4.71-.11,7.43-.32v1.26c-3.24.47-4.18,2.62-4.18,9.21v14.33c0,6.59.94,8.74,4.18,9.16v1.26Z" />
+        <path d="M278.41,124.81l-1.2,3.3c-.52,1.57-.84,2.83-.84,3.77,0,2.15,1.1,3.19,3.5,3.45v1.26c-2.04-.26-3.56-.31-5.75-.31s-3.56.05-5.86.31v-1.05c2.67-.47,4.5-4.19,6.54-9.37l6.17-16.01c1.26-3.24,1.36-3.82,1.36-4.81,0-1.62-1.1-2.36-3.56-2.46v-1.31c.99.05,1.83.11,3.09.11,2.25,0,4.4-.16,6.91-.58.58,2.09,1.52,5.13,2.41,7.43l7.12,18.41c1.78,4.66,3.56,7.69,5.65,8.58v1.05c-2.51-.26-4.34-.31-7.06-.31s-4.34.05-6.91.31v-1.26c2.09-.16,3.45-.84,3.45-2.98,0-1.1-.47-2.77-1.1-4.45l-1.15-3.09h-12.76ZM284.79,108.28l-5.28,13.76h10.62l-5.34-13.76Z" />
+        <path d="M335.33,111.83c0-5.6-.63-8.79-4.13-9.21v-1.26c2.09.21,3.92.32,5.7.32s3.77-.11,5.7-.32v1.26c-3.45.42-4.19,3.35-4.19,9.21v11.41c0,4.45.11,9.52.31,13.34h-4.92l-20.46-28.62v18.21c0,5.7.68,8.74,4.13,9.16v1.26c-1.73-.21-3.71-.31-5.65-.31s-3.77.1-5.7.31v-1.26c3.4-.42,4.13-3.19,4.13-9.16v-14.33c0-5.55-.52-8.74-4.13-9.21v-1.26c1.83.16,3.71.32,5.55.32s3.71-.11,5.39-.32c1.31,2.67,2.93,5.23,4.66,7.69l13.6,19.25v-16.48Z" />
+        <path d="M158.72,157.98c-1.46-5.86-4.45-8.74-9.21-8.74-6.85,0-10.88,5.6-10.88,15.48,0,8.42,3.03,15.75,10.62,15.75,5.39,0,9.52-3.03,12.55-9.21l1.83.84c-1.26,3.19-1.94,5.49-2.51,8.79-3.35,1.2-7.95,1.94-12.35,1.94-11.61,0-17.21-5.6-17.21-17.32,0-12.29,6.33-18.62,18.73-18.62,3.56,0,6.8.42,10.31,1.36-.21,1.93-.26,2.93-.26,4.6s.05,2.93.26,5.13h-1.88Z" />
+        <path d="M174.52,170.7l-1.2,3.3c-.52,1.57-.84,2.83-.84,3.77,0,2.15,1.1,3.19,3.5,3.45v1.26c-2.04-.26-3.56-.31-5.75-.31s-3.56.05-5.86.31v-1.05c2.67-.47,4.5-4.19,6.54-9.37l6.17-16.01c1.26-3.24,1.36-3.82,1.36-4.81,0-1.62-1.1-2.36-3.56-2.46v-1.31c.99.05,1.83.11,3.09.11,2.25,0,4.4-.16,6.91-.58.58,2.09,1.52,5.13,2.41,7.43l7.12,18.41c1.78,4.66,3.56,7.69,5.65,8.58v1.05c-2.51-.26-4.34-.31-7.06-.31s-4.34.05-6.91.31v-1.26c2.09-.16,3.45-.84,3.45-2.98,0-1.1-.47-2.77-1.1-4.45l-1.15-3.09h-12.76ZM180.91,154.16l-5.28,13.76h10.62l-5.34-13.76Z" />
+        <path d="M212.92,172.06c0,6.49.63,8.95,5.18,9.16v1.26c-2.3-.21-5.02-.31-8.11-.31-2.67,0-5.34.1-7.43.31v-1.26c3.24-.42,4.18-2.56,4.18-9.16v-14.33c0-6.59-.94-8.74-4.18-9.21v-1.26c2.14.21,4.5.32,7.27.32s5.81-.32,9.68-.32c6.22,0,10.36,2.09,10.36,8.27,0,6.75-5.13,10.99-13.29,10.99-1.94,0-2.98-.16-3.66-.32v5.86ZM215.54,164.05c4.92,0,7.74-2.77,7.74-7.43s-2.62-7.12-7.12-7.12c-1.73,0-2.62.31-3.24.63v13.65c.84.21,1.41.26,2.62.26Z" />
+        <path d="M248.08,182.47c-3.14-.26-4.39-.31-7.06-.31s-4.71.1-7.53.31v-1.26c3.24-.42,4.18-2.56,4.18-9.16v-14.33c0-6.59-.94-8.74-4.18-9.21v-1.26c3.14.26,4.6.32,7.17.32s4.71-.11,7.43-.32v1.26c-3.24.47-4.18,2.62-4.18,9.21v14.33c0,6.59.94,8.74,4.18,9.16v1.26Z" />
+        <path d="M268.96,172.06c0,6.59.99,8.74,4.24,9.16v1.26c-2.3-.21-4.97-.31-7.38-.31s-4.97.1-7.32.31v-1.26c3.24-.42,4.18-2.56,4.18-9.16v-22.34c-5.86,0-8.89,1.1-10.25,6.49h-1.78c.47-2.56.79-6.07.89-9.1,2.56.21,6.12.31,10.04.31h8.48c3.82,0,7.43-.1,9.99-.31.1,3.03.52,6.28.94,9.1h-1.78c-1.26-5.28-3.92-6.49-10.25-6.49v22.34Z" />
+        <path d="M289.73,170.7l-1.2,3.3c-.52,1.57-.84,2.83-.84,3.77,0,2.15,1.1,3.19,3.5,3.45v1.26c-2.04-.26-3.56-.31-5.75-.31s-3.56.05-5.86.31v-1.05c2.67-.47,4.5-4.19,6.54-9.37l6.17-16.01c1.26-3.24,1.36-3.82,1.36-4.81,0-1.62-1.1-2.36-3.56-2.46v-1.31c.99.05,1.83.11,3.09.11,2.25,0,4.4-.16,6.91-.58.58,2.09,1.52,5.13,2.41,7.43l7.12,18.41c1.78,4.66,3.56,7.69,5.65,8.58v1.05c-2.51-.26-4.34-.31-7.06-.31s-4.34.05-6.91.31v-1.26c2.09-.16,3.45-.84,3.45-2.98,0-1.1-.47-2.77-1.1-4.45l-1.15-3.09h-12.76ZM296.11,154.16l-5.28,13.76h10.62l-5.34-13.76Z" />
+        <path d="M324.73,147.57c2.67,0,4.45-.05,7.48-.32v1.26c-3.09.47-4.03,2.62-4.03,9.21v14.6c0,3.09.37,5.34.99,6.33.52.99,1.57,1.47,3.5,1.47,5.75,0,9-2.25,11.88-8.06l1.67.89c-1.62,3.92-2.56,6.7-3.4,9.84-3.03-.26-7.74-.47-11.88-.47h-6.85c-1.94,0-4.55.05-6.33.16v-1.26c3.24-.42,4.18-2.56,4.18-9.16v-14.33c0-6.59-.94-8.74-4.18-9.21v-1.26c2.62.26,4.24.32,6.96.32Z" />
+      </svg>
     </motion.div>
   );
 }
@@ -1021,6 +1037,18 @@ export default function App() {
     useHorizontalScroll({ disabled: isVertical });
   const [introComplete, setIntroComplete] = useState(false);
 
+  /* ── Hero entry-animation trigger (desktop) ── */
+  const [heroAnimate, setHeroAnimate] = useState(false);
+  useEffect(() => {
+    if (!introComplete) return;
+    const t = setTimeout(() => setHeroAnimate(true), 80);
+    return () => clearTimeout(t);
+  }, [introComplete]);
+
+  /* ── Hero scroll-arrow: shown whenever the hero is in view.
+        Reactive to scrollX — reappears when user scrolls back. ── */
+  const heroArrowHidden = scrollX > 20;
+
   /* ═══ Subpage detail views (no route, no unmount) ═══ */
   const vvw = useSubpageMode("/vermoegensverwaltung");
   const ast = useSubpageMode("/anlagestrategien");
@@ -1030,6 +1058,12 @@ export default function App() {
   const handleIntroComplete = useCallback(() => {
     setIntroComplete(true);
   }, []);
+
+  /* ── Login overlay state ── */
+  const [loginOpen, setLoginOpen] = useState(false);
+
+  /* ── Legal pages routing (Impressum / Datenschutz / Kundeninformation) ── */
+  const legal = useLegalRoute();
 
   const navigateToContact = useCallback(() => {
     if (isDetailMode) {
@@ -1069,6 +1103,7 @@ export default function App() {
           introComplete={introComplete}
           breakpoint={breakpoint}
           isVertical
+          onLoginClick={() => setLoginOpen(true)}
         />
 
         {/* ── HERO (mobile/tablet — page-load stagger animation) ── */}
@@ -1111,7 +1146,15 @@ export default function App() {
         />
 
         {/* ── KONTAKT (mobile/tablet — 5-field form, MapOverlay trigger) ── */}
-        <Section6Kontakt isVertical breakpoint={breakpoint} />
+        <Section6Kontakt isVertical breakpoint={breakpoint} onOpenLegal={legal.open} />
+
+        <LoginOverlay
+          open={loginOpen}
+          onClose={() => setLoginOpen(false)}
+          onSupportClick={navigateToContact}
+        />
+
+        <LegalPage activePath={legal.activePath} onClose={legal.close} />
       </div>
     );
   }
@@ -1143,6 +1186,7 @@ export default function App() {
           introComplete={introComplete}
           breakpoint={breakpoint}
           isVertical={false}
+          onLoginClick={() => setLoginOpen(true)}
         />
 
         {introComplete && (
@@ -1170,11 +1214,12 @@ export default function App() {
             : "opacity 400ms ease-out",
         }}
       >
-        {/* CHAPTER 1 — HERO */}
+        {/* CHAPTER 1 — HERO (desktop — emotional dominant headline) */}
         <div
           className="flex-shrink-0 h-screen relative"
           style={{ width: layout.heroWidth, backgroundColor: C.bg }}
         >
+          {/* Image — right, unchanged */}
           <div
             className="absolute z-0"
             style={{ top: 0, bottom: 0, left: layout.imageLeft, right: 0 }}
@@ -1186,93 +1231,169 @@ export default function App() {
             />
           </div>
 
+          {/* Subheadline — top-left, next to vertical TELLIAN logo (safe from image growth) */}
           <div
-            className="relative z-10 h-full flex flex-col"
-            style={{ ...textColStyle }}
+            style={{
+              position: "absolute",
+              top: "40px",
+              left: "68px",
+              zIndex: 5,
+              display: "flex",
+              alignItems: "center",
+              gap: "12px",
+              opacity: heroAnimate ? 1 : 0,
+              transform: heroAnimate ? "translateX(0)" : "translateX(-8px)",
+              transition: "opacity 600ms ease-out 500ms, transform 600ms cubic-bezier(0.16,1,0.3,1) 500ms",
+            }}
           >
-            <div>
+            <span
+              aria-hidden
+              style={{
+                display: "inline-block",
+                width: "16px",
+                height: "1px",
+                backgroundColor: C.muted,
+                flexShrink: 0,
+              }}
+            />
+            <span
+              style={{
+                fontFamily: sans,
+                fontSize: "10px",
+                letterSpacing: "0.16em",
+                color: C.stone,
+                textTransform: "uppercase",
+                whiteSpace: "nowrap",
+              }}
+            >
+              Unabhängige Vermögensverwaltung · Zürich · Seit 1996
+            </span>
+          </div>
+
+          {/* Text column — only headline + CTA + trust badge now */}
+          <div
+            className="relative z-10 h-full flex flex-col justify-end"
+            style={{ ...textColStyle, paddingBottom: "80px" }}
+          >
+            {/* Headline — dominant, fades in first */}
+            <h1
+              style={{
+                fontFamily: serif,
+                fontSize: "clamp(88px, 12vh, 140px)",
+                lineHeight: 1.0,
+                color: C.dark,
+                letterSpacing: "-0.03em",
+                maxWidth: "520px",
+                fontWeight: 400,
+                margin: 0,
+                opacity: heroAnimate ? 1 : 0,
+                transform: heroAnimate ? "translateY(0)" : "translateY(24px)",
+                transition: "opacity 800ms ease-out 200ms, transform 800ms cubic-bezier(0.16,1,0.3,1) 200ms",
+              }}
+            >
+              Vermögen
+              <br />
+              <em style={{ fontStyle: "italic", fontWeight: 400 }}>mit Methode</em>
+            </h1>
+
+            {/* Breathing space between headline and CTA */}
+            <div style={{ height: "clamp(48px, 6vh, 80px)" }} />
+
+            {/* CTA — solid black (variant override) */}
+            <div
+              style={{
+                opacity: heroAnimate ? 1 : 0,
+                transform: heroAnimate ? "translateX(0)" : "translateX(-16px)",
+                transition: "opacity 500ms ease-out 900ms, transform 500ms cubic-bezier(0.16,1,0.3,1) 900ms",
+              }}
+            >
+              <CtaButton
+                href="#contact"
+                variant="solid"
+                fullWidth={false}
+                style={{ padding: "14px 32px" }}
+                onClick={(e) => { e.preventDefault(); scrollTo(0.88); }}
+              >
+                Gespräch vereinbaren
+              </CtaButton>
+            </div>
+
+            {/* Trust badge — unchanged */}
+            <div
+              className="flex items-center gap-3"
+              style={{
+                marginTop: "14px",
+                opacity: heroAnimate ? 1 : 0,
+                transition: "opacity 400ms ease-out 1200ms",
+              }}
+            >
+              <div
+                style={{ width: "16px", height: "1px", backgroundColor: C.muted }}
+              />
               <span
                 style={{
                   fontFamily: sans,
-                  fontSize: "clamp(10px, 1.4vh, 14px)",
-                  letterSpacing: "0.15em",
+                  fontSize: "10px",
+                  letterSpacing: "0.16em",
                   color: C.stone,
-                  display: "block",
                 }}
                 className="uppercase"
               >
-                UNABHÄNGIGE VERMÖGENSVERWALTUNG · ZÜRICH · SEIT 1996
+                FINMA-LIZENZIERT · ZÜRICH
               </span>
-
-              <div
-                style={{
-                  width: "32px",
-                  height: "1.5px",
-                  backgroundColor: C.dark,
-                  marginTop: SPACING.eyebrowToAccent,
-                }}
-              />
-
-              <h1
-                style={{
-                  fontFamily: serif,
-                  fontSize: "clamp(72px, 12vh, 128px)",
-                  lineHeight: 0.93,
-                  color: C.dark,
-                  letterSpacing: "-0.03em",
-                  marginTop: SPACING.accentToHeadline,
-                  maxWidth: "340px",
-                  fontWeight: 400,
-                }}
-              >
-                Vermögen
-                <br />
-                <em style={{ fontStyle: "italic", fontWeight: 400 }}>mit Methode</em>
-              </h1>
-            </div>
-
-            <div style={{ flex: 1, minHeight: "clamp(40px, 5vh, 100px)" }} />
-
-            <div>
-              <p
-                style={{
-                  fontFamily: sans,
-                  fontSize: "clamp(11px, 1.3vh, 12px)",
-                  color: C.charcoal,
-                  lineHeight: 1.8,
-                  maxWidth: "520px",
-                }}
-              >
-                Tellian Capital ist eine FINMA-lizenzierte Vermögensverwaltung mit Sitz in Zürich. Wir verwalten Vermögen auf Mandatsbasis — quantitativ gestützt, unabhängig von Bankprodukten und frei von Vertriebsinteressen. Jeder Anlageentscheid folgt einem systematischen Prozess: eigene quantitative Modelle, ein monatlich tagendes Anlagekomitee und eine klare Trennung zwischen Kundeninteresse und Produktvertrieb.
-              </p>
-
-              <div style={{ marginTop: SPACING.bodyToCta }}>
-                <CtaButton href="#contact" onClick={(e) => { e.preventDefault(); scrollTo(0.88); }}>
-                  Gespräch vereinbaren
-                </CtaButton>
-              </div>
-
-              <div
-                className="flex items-center gap-3"
-                style={{ marginTop: "12px" }}
-              >
-                <div
-                  style={{ width: "16px", height: "1px", backgroundColor: C.muted }}
-                />
-                <span
-                  style={{
-                    fontFamily: sans,
-                    fontSize: "10px",
-                    letterSpacing: "0.16em",
-                    color: C.stone,
-                  }}
-                  className="uppercase"
-                >
-                  FINMA-LIZENZIERT · ZÜRICH
-                </span>
-              </div>
             </div>
           </div>
+
+          {/* Horizontal scroll-arrow — bottom right, pulses, fades on first scroll.
+              Hero is 110vw wide → we use `right: calc(10vw + 56px)` so the arrow's
+              right edge sits 56px from the *viewport* right, not the Hero right. */}
+          <div
+            aria-hidden
+            style={{
+              position: "absolute",
+              bottom: "56px",
+              right: "calc(10vw + 56px)",
+              zIndex: 5,
+              color: C.charcoal,
+              opacity: heroAnimate && !heroArrowHidden ? 1 : 0,
+              transform: heroArrowHidden
+                ? "translateX(16px) scale(0.6)"
+                : "scale(1)",
+              transition: heroArrowHidden
+                ? "opacity 600ms cubic-bezier(0.4,0,0.2,1), transform 600ms cubic-bezier(0.4,0,0.2,1)"
+                : "opacity 700ms ease-out 600ms",
+              pointerEvents: "none",
+            }}
+          >
+            <div
+              style={{
+                animation: heroAnimate && !heroArrowHidden
+                  ? "tellianHeroArrowPulse 2s ease-in-out infinite"
+                  : "none",
+              }}
+            >
+              <svg
+                width="140"
+                height="75"
+                viewBox="0 0 195 105"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeMiterlimit="10"
+                style={{ display: "block" }}
+              >
+                <path d="M0 52.6367L190.169 52.6367" />
+                <path d="M195.001 52.4033C166.054 52.4033 142.561 28.9266 142.561 0" />
+                <path d="M195.001 52.3516C166.054 52.3516 142.561 75.8282 142.561 104.755" />
+              </svg>
+            </div>
+          </div>
+          <style>{`
+            @keyframes tellianHeroArrowPulse {
+              0%, 100% { transform: translateX(0); }
+              50%      { transform: translateX(10px); }
+            }
+          `}</style>
         </div>
 
         {/* Breathing after Hero */}
@@ -1328,8 +1449,16 @@ export default function App() {
         />
 
         {/* CHAPTER 6 — KONTAKT (map rendered via overlay, no layout impact) */}
-        <Section6Kontakt />
+        <Section6Kontakt onOpenLegal={legal.open} />
       </div>
+
+      <LoginOverlay
+        open={loginOpen}
+        onClose={() => setLoginOpen(false)}
+        onSupportClick={navigateToContact}
+      />
+
+      <LegalPage activePath={legal.activePath} onClose={legal.close} />
     </div>
   );
 }

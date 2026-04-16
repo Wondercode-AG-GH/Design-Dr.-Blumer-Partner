@@ -1,5 +1,24 @@
 import { ANLAGEPROZESS_STEPS } from "../data/anlageprozessSteps";
 import { CtaButton } from "./CtaButton";
+import { FaqAccordion, type FaqItem } from "./FaqAccordion";
+
+const VERMOEGENSVERWALTUNG_FAQ: readonly FaqItem[] = [
+  {
+    question: "Wie funktioniert die Vermögensverwaltung auf Mandatsbasis?",
+    answer:
+      "Sie erteilen uns eine Verwaltungsvollmacht. Ihr Vermögen bleibt auf Ihrem eigenen Depot bei einer Kooperationsbank. Wir treffen die Anlageentscheide — Sie behalten die Kontrolle über Ihre Bankbeziehung.",
+  },
+  {
+    question: "Wer entscheidet über Anlagen in meinem Portfolio?",
+    answer:
+      "Die Entscheidungen trifft unser Anlagekomitee, das monatlich tagt und Geschäftsleitung, Chef Anlagestrategie, internationale Partner Asset Manager und Experten für alternative Anlageklassen vereint. Bei ausserordentlichen Marktentwicklungen tagt das Komitee kurzfristig.",
+  },
+  {
+    question: "Wie oft erhalte ich ein Reporting?",
+    answer:
+      "Vierteljährlich, automatisch und konsolidiert. Auf Wunsch mit kundenspezifischen Zusatzauswertungen. Zusätzlich haben Sie jederzeit Einblick in Ihr Kundenportal.",
+  },
+];
 
 /* ─── Design tokens ─── */
 const C = {
@@ -148,6 +167,17 @@ export function AnlageprozessDetail({ isMobile, onContactClick }: AnlageprozessD
           </div>
         </section>
       ))}
+
+      {/* ═══ FAQ — thematic questions about the Mandat & process ═══ */}
+      <div
+        style={{
+          borderTop: `1px solid ${C.line}`,
+          paddingTop: isMobile ? "48px" : "72px",
+          paddingBottom: isMobile ? "8px" : "16px",
+        }}
+      >
+        <FaqAccordion items={VERMOEGENSVERWALTUNG_FAQ} schemaId="vermoegensverwaltung" />
+      </div>
 
       {/* ═══ Final CTA ═══ */}
       <div

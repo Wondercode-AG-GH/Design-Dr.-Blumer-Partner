@@ -1,6 +1,25 @@
 import { motion } from "motion/react";
 import { ANLAGESTRATEGIEN_SECTIONS } from "../data/anlagestrategienSections";
 import { CtaButton } from "./CtaButton";
+import { FaqAccordion, type FaqItem } from "./FaqAccordion";
+
+const ANLAGESTRATEGIEN_FAQ: readonly FaqItem[] = [
+  {
+    question: "Welche Strategie passt zu mir?",
+    answer:
+      "Die passende Strategie ergibt sich aus Ihren Anlagezielen, Ihrer Risikotoleranz und Ihrem Anlagehorizont. Wir entwickeln diese Grundlagen gemeinsam im Erstgespräch und empfehlen darauf basierend eine Strategie oder einen Mix mehrerer Strategien.",
+  },
+  {
+    question: "Kann ich meine Strategie später wechseln?",
+    answer:
+      "Ja. Ihr Portfolio wird laufend überwacht, und wenn sich Ihre Lebenssituation oder Ihre Ziele ändern, passen wir die Strategie entsprechend an. Strategiewechsel erfolgen nach Rücksprache mit Ihnen und werden vom Anlagekomitee umgesetzt.",
+  },
+  {
+    question: "Wie viel Risiko ist in welcher Strategie enthalten?",
+    answer:
+      "Jede Strategie hat definierte Risikokennzahlen wie Value at Risk und maximale Drawdown-Limits. Diese werden im Detail im Erstgespräch vorgestellt und regelmässig überwacht. Die Einhaltung der Risikovorgaben ist Teil unserer laufenden Verwaltung.",
+  },
+];
 
 /* ─── Design tokens ─── */
 const C = {
@@ -156,6 +175,17 @@ export function AnlagestrategienDetail({
           </div>
         </section>
       ))}
+
+      {/* ═══ FAQ — thematic questions about strategy selection and adjustment ═══ */}
+      <div
+        style={{
+          borderTop: `1px solid ${C.line}`,
+          paddingTop: isMobile ? "48px" : "72px",
+          paddingBottom: isMobile ? "8px" : "16px",
+        }}
+      >
+        <FaqAccordion items={ANLAGESTRATEGIEN_FAQ} schemaId="anlagestrategien" />
+      </div>
 
       {/* ═══ Final CTA ═══ */}
       <div

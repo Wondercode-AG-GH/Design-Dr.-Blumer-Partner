@@ -77,6 +77,7 @@ interface NavigationProps {
   introComplete: boolean;
   breakpoint: Breakpoint;
   isVertical: boolean;
+  onLoginClick: () => void;
 }
 
 /* ═══════════════════════════════════════════════════════════════
@@ -91,6 +92,7 @@ export function Navigation({
   introComplete,
   breakpoint,
   isVertical,
+  onLoginClick,
 }: NavigationProps) {
   const [expanded,    setExpanded]    = useState(false);
   const [visible,     setVisible]     = useState(true);
@@ -402,8 +404,14 @@ export function Navigation({
                     ))}
                   </div>
 
-                  {/* Kundenportal */}
+                  {/* Login */}
                   <button
+                    onClick={(e) => {
+                      (e.currentTarget as HTMLElement).focus();
+                      setExpanded(false);
+                      onLoginClick();
+                    }}
+                    aria-haspopup="dialog"
                     style={{
                       display: "flex", alignItems: "center", gap: 8,
                       backgroundColor: "#1a1a1a", color: "#F2F1EC",
@@ -413,7 +421,7 @@ export function Navigation({
                     }}
                   >
                     <LockIcon size={14} color="#F2F1EC" strokeWidth={1.5} />
-                    Kundenportal
+                    Login
                   </button>
                 </div>
               </div>
@@ -546,6 +554,11 @@ export function Navigation({
           <button
             onMouseEnter={() => setLoginHover(true)}
             onMouseLeave={() => setLoginHover(false)}
+            onClick={(e) => {
+              (e.currentTarget as HTMLElement).focus();
+              onLoginClick();
+            }}
+            aria-haspopup="dialog"
             style={{
               outline:       "none",
               border:        "none",
