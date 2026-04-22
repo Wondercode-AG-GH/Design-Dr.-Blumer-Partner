@@ -31,6 +31,21 @@
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
   --radius: 0.625rem;
+
+  /* ── Tellian Capital — brand palette ── */
+  --tellian-bg: #F9F9F7;
+  --tellian-bg-secondary: #F2F1EC;
+  --tellian-dark: #1A1916;
+  --tellian-charcoal: #3A3835;
+  --tellian-stone: #8A857C;
+  --tellian-muted: #B0ACA5;
+  --tellian-line: #D8D5CF;
+  --tellian-warm: #989071;
+  --tellian-subtle: #E8E6E1;
+  --tellian-accent: #6B665E;
+  --tellian-dot-inactive: #C8C5BB;
+  --tellian-dot-active: #8A8575;
+
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: #030213;
@@ -109,6 +124,20 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  /* ── Tellian brand colors → Tailwind utilities (bg-tellian-dark, text-tellian-stone, etc.) ── */
+  --color-tellian-bg: var(--tellian-bg);
+  --color-tellian-bg-secondary: var(--tellian-bg-secondary);
+  --color-tellian-dark: var(--tellian-dark);
+  --color-tellian-charcoal: var(--tellian-charcoal);
+  --color-tellian-stone: var(--tellian-stone);
+  --color-tellian-muted: var(--tellian-muted);
+  --color-tellian-line: var(--tellian-line);
+  --color-tellian-warm: var(--tellian-warm);
+  --color-tellian-subtle: var(--tellian-subtle);
+  --color-tellian-accent: var(--tellian-accent);
+  --color-tellian-dot-inactive: var(--tellian-dot-inactive);
+  --color-tellian-dot-active: var(--tellian-dot-active);
+
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
