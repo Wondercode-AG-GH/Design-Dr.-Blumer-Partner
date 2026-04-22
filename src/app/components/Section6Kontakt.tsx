@@ -9,24 +9,10 @@ import {
   type LegalPath,
 } from "../data/legalPages";
 
-/* ─── Design tokens ─── */
-const C = {
-  bgPrimary:      "#F9F9F7",
-  bgSecondary:    "#F2F1EC",
-  textPrimary:    "#1A1916",
-  textSecondary:  "#3A3835",
-  textTertiary:   "#8A857C",
-  borderTertiary: "#D8D5CF",
-  line:           "#D8D5CF",
-  muted:          "#B0ACA5",
-  warm:           "#989071",
-  road:           "#E8E6E1",
-  water:          "#D5DDD8",
-  green:          "#E4E8E0",
-};
+import { C, serif, sans } from "../tokens";
 
-const serif = "'Cormorant Garamond', serif";
-const sans  = "'Inter', sans-serif";
+/* Mapbox-specific colors (not design tokens — map theming only) */
+const MAP_COLORS = { road: "#E8E6E1", water: "#D5DDD8", green: "#E4E8E0" };
 
 const MAPBOX_TOKEN = import.meta.env.VITE_MAPBOX_TOKEN as string | undefined;
 const MAP_CENTER: [number, number] = [8.5387, 47.3769];
@@ -46,9 +32,9 @@ function applyStyleAndMarker(map: mapboxgl.Map) {
         map.setPaintProperty(id, "background-color", C.bgSecondary);
       } else if (type === "fill") {
         if (/water|river|stream|sea|lake/i.test(id)) {
-          map.setPaintProperty(id, "fill-color", C.water);
+          map.setPaintProperty(id, "fill-color", MAP_COLORS.water);
         } else if (/park|wood|grass|vegetation|landuse/i.test(id) && !/building/i.test(id)) {
-          map.setPaintProperty(id, "fill-color", C.green);
+          map.setPaintProperty(id, "fill-color", MAP_COLORS.green);
         } else if (/building/i.test(id)) {
           map.setPaintProperty(id, "fill-color", "#E8E6E1");
           map.setPaintProperty(id, "fill-outline-color", "#DCD8D0");
@@ -59,18 +45,18 @@ function applyStyleAndMarker(map: mapboxgl.Map) {
         if (/motorway|trunk|primary|main/i.test(id)) {
           map.setPaintProperty(id, "line-color", C.line);
         } else if (/road|street|secondary|tertiary|service|path|pedestrian/i.test(id)) {
-          map.setPaintProperty(id, "line-color", C.road);
+          map.setPaintProperty(id, "line-color", MAP_COLORS.road);
         } else if (/water|river/i.test(id)) {
-          map.setPaintProperty(id, "line-color", C.water);
+          map.setPaintProperty(id, "line-color", MAP_COLORS.water);
         } else {
-          map.setPaintProperty(id, "line-color", C.road);
+          map.setPaintProperty(id, "line-color", MAP_COLORS.road);
         }
       } else if (type === "symbol") {
         if (/poi|transit|airport|shield/i.test(id)) {
           map.setLayoutProperty(id, "visibility", "none");
         } else {
           try {
-            map.setPaintProperty(id, "text-color", C.textTertiary);
+            map.setPaintProperty(id, "text-color", C.stone);
             map.setPaintProperty(id, "text-halo-color", C.bgSecondary);
             map.setPaintProperty(id, "text-halo-width", 1.2);
           } catch { /* ignore */ }
@@ -376,9 +362,9 @@ function ContactForm({ stack = false }: { stack?: boolean } = {}) {
   const fieldStyle: React.CSSProperties = {
     fontFamily: sans,
     fontSize: stack ? "14px" : "13px",
-    color: C.textPrimary,
+    color: C.dark,
     backgroundColor: "transparent",
-    border: `0.5px solid ${C.borderTertiary}`,
+    border: `0.5px solid ${C.line}`,
     borderRadius: "6px",
     padding: stack ? "12px 14px" : "10px 12px",
     minHeight: stack ? "44px" : undefined, // Apple HIG touch target on mobile
@@ -391,10 +377,10 @@ function ContactForm({ stack = false }: { stack?: boolean } = {}) {
   if (submitted) {
     return (
       <div style={{ padding: "20px 0" }}>
-        <span style={{ fontFamily: serif, fontSize: "24px", color: C.textPrimary, display: "block", lineHeight: 1.15 }}>
+        <span style={{ fontFamily: serif, fontSize: "24px", color: C.dark, display: "block", lineHeight: 1.15 }}>
           Vielen Dank.
         </span>
-        <span style={{ fontFamily: sans, fontSize: "12px", color: C.textSecondary, display: "block", marginTop: "12px", lineHeight: 1.6 }}>
+        <span style={{ fontFamily: sans, fontSize: "12px", color: C.charcoal, display: "block", marginTop: "12px", lineHeight: 1.6 }}>
           Wir melden uns innerhalb von 24 Stunden.
         </span>
       </div>
@@ -415,14 +401,14 @@ function ContactForm({ stack = false }: { stack?: boolean } = {}) {
           value={form.firstName}
           onChange={(e) => setForm({ ...form, firstName: e.target.value })}
           style={fieldStyle}
-          className="placeholder:text-[#B0ACA5] focus:border-[#1A1916]"
+          className="placeholder:text-tellian-muted focus:border-tellian-dark"
         />
         <input
           type="text" placeholder="Nachname" required
           value={form.lastName}
           onChange={(e) => setForm({ ...form, lastName: e.target.value })}
           style={fieldStyle}
-          className="placeholder:text-[#B0ACA5] focus:border-[#1A1916]"
+          className="placeholder:text-tellian-muted focus:border-tellian-dark"
         />
       </div>
       <div style={pairStyle}>
@@ -431,14 +417,14 @@ function ContactForm({ stack = false }: { stack?: boolean } = {}) {
           value={form.email}
           onChange={(e) => setForm({ ...form, email: e.target.value })}
           style={fieldStyle}
-          className="placeholder:text-[#B0ACA5] focus:border-[#1A1916]"
+          className="placeholder:text-tellian-muted focus:border-tellian-dark"
         />
         <input
           type="tel" placeholder="Telefon"
           value={form.phone}
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
           style={fieldStyle}
-          className="placeholder:text-[#B0ACA5] focus:border-[#1A1916]"
+          className="placeholder:text-tellian-muted focus:border-tellian-dark"
         />
       </div>
       <textarea
@@ -446,7 +432,7 @@ function ContactForm({ stack = false }: { stack?: boolean } = {}) {
         value={form.message}
         onChange={(e) => setForm({ ...form, message: e.target.value })}
         style={{ ...fieldStyle, height: stack ? "100px" : "80px", resize: "none" }}
-        className="placeholder:text-[#B0ACA5] focus:border-[#1A1916]"
+        className="placeholder:text-tellian-muted focus:border-tellian-dark"
       />
 
       {stack ? (
@@ -460,7 +446,7 @@ function ContactForm({ stack = false }: { stack?: boolean } = {}) {
               letterSpacing: "0.2em",
               textTransform: "uppercase",
               color: "#FFFFFF",
-              backgroundColor: C.textPrimary,
+              backgroundColor: C.dark,
               border: "none",
               borderRadius: "6px",
               padding: "16px",
@@ -469,7 +455,7 @@ function ContactForm({ stack = false }: { stack?: boolean } = {}) {
               appearance: "none",
               width: "100%",
             }}
-            className="hover:bg-[#3A3835]"
+            className="hover:bg-tellian-charcoal"
           >
             Anfrage senden →
           </button>
@@ -477,7 +463,7 @@ function ContactForm({ stack = false }: { stack?: boolean } = {}) {
             style={{
               fontFamily: sans,
               fontSize: "11px",
-              color: C.textTertiary,
+              color: C.stone,
               display: "block",
               textAlign: "center",
               marginTop: "10px",
@@ -496,7 +482,7 @@ function ContactForm({ stack = false }: { stack?: boolean } = {}) {
               letterSpacing: "0.2em",
               textTransform: "uppercase",
               color: "#FFFFFF",
-              backgroundColor: C.textPrimary,
+              backgroundColor: C.dark,
               border: "none",
               borderRadius: "6px",
               padding: "13px 28px",
@@ -504,11 +490,11 @@ function ContactForm({ stack = false }: { stack?: boolean } = {}) {
               transition: "background-color 0.3s ease",
               appearance: "none",
             }}
-            className="hover:bg-[#3A3835]"
+            className="hover:bg-tellian-charcoal"
           >
             Anfrage senden →
           </button>
-          <span style={{ fontFamily: sans, fontSize: "10px", color: C.textTertiary }}>
+          <span style={{ fontFamily: sans, fontSize: "10px", color: C.stone }}>
             Antwort innert 24h
           </span>
         </div>
@@ -542,7 +528,7 @@ function LegalLinksRow({
       style={{
         marginTop: "16px",
         paddingTop: "16px",
-        borderTop: `0.5px solid ${C.borderTertiary}`,
+        borderTop: `0.5px solid ${C.line}`,
         display: "flex",
         flexWrap: "wrap",
         alignItems: "center",
@@ -578,15 +564,15 @@ function LegalLinksRow({
               fontSize: "10px",
               letterSpacing: "0.16em",
               textTransform: "uppercase",
-              color: C.textTertiary,
+              color: C.stone,
               textDecoration: "none",
               transition: "color 300ms cubic-bezier(0.16, 1, 0.3, 1)",
               outline: "none",
             }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = C.textPrimary)}
-            onMouseLeave={(e) => (e.currentTarget.style.color = C.textTertiary)}
-            onFocus={(e) => (e.currentTarget.style.color = C.textPrimary)}
-            onBlur={(e) => (e.currentTarget.style.color = C.textTertiary)}
+            onMouseEnter={(e) => (e.currentTarget.style.color = C.dark)}
+            onMouseLeave={(e) => (e.currentTarget.style.color = C.stone)}
+            onFocus={(e) => (e.currentTarget.style.color = C.dark)}
+            onBlur={(e) => (e.currentTarget.style.color = C.stone)}
           >
             {LEGAL_LINK_LABELS[path]}
           </a>
@@ -636,7 +622,7 @@ function MapLinkMobile({
           display: "inline-block",
           width: hover ? "24px" : "14px",
           height: "0.5px",
-          backgroundColor: hover ? C.textPrimary : C.textTertiary,
+          backgroundColor: hover ? C.dark : C.stone,
           transition: `width 300ms ${EASE}, background-color 300ms ${EASE}`,
           flexShrink: 0,
         }}
@@ -647,7 +633,7 @@ function MapLinkMobile({
           fontSize: "11px",
           letterSpacing: "0.16em",
           textTransform: "uppercase",
-          color: C.textPrimary,
+          color: C.dark,
           lineHeight: 1,
         }}
       >
@@ -668,7 +654,7 @@ function LegalLinksStackedMobile({
       style={{
         marginTop: "24px",
         paddingTop: "20px",
-        borderTop: `0.5px solid ${C.borderTertiary}`,
+        borderTop: `0.5px solid ${C.line}`,
         display: "flex",
         flexDirection: "column",
       }}
@@ -724,7 +710,7 @@ function LegalLinkMobileRow({
           display: "inline-block",
           width: hover ? "22px" : "14px",
           height: "0.5px",
-          backgroundColor: hover ? C.textSecondary : C.muted,
+          backgroundColor: hover ? C.charcoal : C.muted,
           transition: `width 300ms ${EASE}, background-color 300ms ${EASE}`,
           flexShrink: 0,
         }}
@@ -735,7 +721,7 @@ function LegalLinkMobileRow({
           fontSize: "10px",
           letterSpacing: "0.16em",
           textTransform: "uppercase",
-          color: hover ? C.textPrimary : C.textTertiary,
+          color: hover ? C.dark : C.stone,
           transition: `color 300ms ${EASE}`,
           lineHeight: 1,
         }}
@@ -758,7 +744,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
       <section
         id="section-kontakt"
         style={{
-          backgroundColor: C.bgPrimary,
+          backgroundColor: C.bg,
           padding: `clamp(48px, 7vh, 80px) ${padX} 48px`,
         }}
       >
@@ -768,7 +754,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
             fontFamily: sans,
             fontSize: "10px",
             letterSpacing: "2.5px",
-            color: C.textTertiary,
+            color: C.stone,
             display: "block",
             textTransform: "uppercase",
           }}
@@ -781,7 +767,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
           style={{
             width: "28px",
             height: "1.5px",
-            backgroundColor: C.textPrimary,
+            backgroundColor: C.dark,
             margin: "12px 0",
           }}
         />
@@ -792,7 +778,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
             fontFamily: serif,
             fontSize: isMobile ? "clamp(28px, 8vw, 36px)" : "clamp(36px, 5vw, 48px)",
             lineHeight: 1.12,
-            color: C.textPrimary,
+            color: C.dark,
             letterSpacing: "-0.02em",
             margin: "16px 0 0 0",
             fontWeight: 400,
@@ -808,7 +794,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
           style={{
             fontFamily: sans,
             fontSize: isMobile ? "14px" : "15px",
-            color: C.textSecondary,
+            color: C.charcoal,
             lineHeight: 1.65,
             maxWidth: "520px",
             marginTop: "24px",
@@ -824,7 +810,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
               fontFamily: sans,
               fontSize: "10px",
               letterSpacing: "2px",
-              color: C.textTertiary,
+              color: C.stone,
               display: "block",
               textTransform: "uppercase",
               marginBottom: "16px",
@@ -841,7 +827,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
             style={{
               width: "100%",
               height: "0.5px",
-              backgroundColor: C.borderTertiary,
+              backgroundColor: C.line,
               marginBottom: "20px",
             }}
           />
@@ -850,7 +836,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
               fontFamily: sans,
               fontSize: "13px",
               fontWeight: 500,
-              color: C.textPrimary,
+              color: C.dark,
               display: "block",
             }}
           >
@@ -860,7 +846,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
             style={{
               fontFamily: sans,
               fontSize: "12px",
-              color: C.textTertiary,
+              color: C.stone,
               display: "block",
               marginTop: "2px",
             }}
@@ -871,7 +857,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
             style={{
               fontFamily: sans,
               fontSize: "12px",
-              color: C.textTertiary,
+              color: C.stone,
               display: "block",
               marginTop: "4px",
             }}
@@ -893,13 +879,13 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
               style={{
                 fontFamily: sans,
                 fontSize: "13px",
-                color: C.textSecondary,
+                color: C.charcoal,
                 display: "flex",
                 alignItems: "center",
                 minHeight: "44px",
                 padding: "4px 0",
               }}
-              className="hover:text-[#1A1916] transition-colors duration-300"
+              className="hover:text-tellian-dark transition-colors duration-300"
             >
               +41 44 224 40 24
             </a>
@@ -908,13 +894,13 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
               style={{
                 fontFamily: sans,
                 fontSize: "13px",
-                color: C.textSecondary,
+                color: C.charcoal,
                 display: "flex",
                 alignItems: "center",
                 minHeight: "44px",
                 padding: "4px 0",
               }}
-              className="hover:text-[#1A1916] transition-colors duration-300"
+              className="hover:text-tellian-dark transition-colors duration-300"
             >
               info@telliancapital.ch
             </a>
@@ -934,7 +920,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
             gap: "10px",
           }}
         >
-          <div style={{ width: "16px", height: "1px", backgroundColor: C.borderTertiary }} />
+          <div style={{ width: "16px", height: "1px", backgroundColor: C.line }} />
           <span
             style={{
               fontFamily: sans,
@@ -966,7 +952,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
       className="flex-shrink-0 h-screen flex"
       style={{
         width: "100vw",
-        backgroundColor: C.bgPrimary,
+        backgroundColor: C.bg,
       }}
     >
       {/* ═══ COLUMN 1 — Editorial ═══ */}
@@ -978,7 +964,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
           padding: "clamp(36px, 5vh, 80px) clamp(36px, 5vw, 80px) clamp(24px, 3vh, 56px)",
           display: "flex",
           flexDirection: "column",
-          backgroundColor: C.bgPrimary,
+          backgroundColor: C.bg,
         }}
       >
         {/* Eyebrow */}
@@ -987,7 +973,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
             fontFamily: sans,
             fontSize: "10px",
             letterSpacing: "2.5px",
-            color: C.textTertiary,
+            color: C.stone,
             display: "block",
             textTransform: "uppercase",
           }}
@@ -1000,7 +986,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
           style={{
             width: "28px",
             height: "1.5px",
-            backgroundColor: C.textPrimary,
+            backgroundColor: C.dark,
             margin: "12px 0",
           }}
         />
@@ -1011,7 +997,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
             fontFamily: serif,
             fontSize: "32px",
             lineHeight: 1.12,
-            color: C.textPrimary,
+            color: C.dark,
             letterSpacing: "-0.02em",
             margin: 0,
             fontWeight: 400,
@@ -1027,7 +1013,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
           style={{
             fontFamily: sans,
             fontSize: "14px",
-            color: C.textSecondary,
+            color: C.charcoal,
             lineHeight: 1.6,
             maxWidth: "320px",
             marginTop: "20px",
@@ -1042,7 +1028,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
             style={{
               width: "100%",
               height: "0.5px",
-              backgroundColor: C.borderTertiary,
+              backgroundColor: C.line,
               marginBottom: "20px",
             }}
           />
@@ -1053,7 +1039,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
               fontFamily: sans,
               fontSize: "13px",
               fontWeight: 500,
-              color: C.textPrimary,
+              color: C.dark,
               display: "block",
             }}
           >
@@ -1063,7 +1049,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
             style={{
               fontFamily: sans,
               fontSize: "11px",
-              color: C.textTertiary,
+              color: C.stone,
               display: "block",
               marginTop: "2px",
             }}
@@ -1074,7 +1060,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
             style={{
               fontFamily: sans,
               fontSize: "11px",
-              color: C.textTertiary,
+              color: C.stone,
               display: "block",
               marginTop: "4px",
             }}
@@ -1092,15 +1078,15 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
           >
             <a
               href="tel:+41442244024"
-              style={{ fontFamily: sans, fontSize: "11px", color: C.textSecondary }}
-              className="hover:text-[#1A1916] transition-colors duration-300"
+              style={{ fontFamily: sans, fontSize: "11px", color: C.charcoal }}
+              className="hover:text-tellian-dark transition-colors duration-300"
             >
               +41 44 224 40 24
             </a>
             <a
               href="mailto:info@telliancapital.ch"
-              style={{ fontFamily: sans, fontSize: "11px", color: C.textSecondary }}
-              className="hover:text-[#1A1916] transition-colors duration-300"
+              style={{ fontFamily: sans, fontSize: "11px", color: C.charcoal }}
+              className="hover:text-tellian-dark transition-colors duration-300"
             >
               info@telliancapital.ch
             </a>
@@ -1130,8 +1116,8 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
           style={{
             width: "100%",
             maxWidth: "440px",
-            backgroundColor: C.bgPrimary,
-            border: `0.5px solid ${C.borderTertiary}`,
+            backgroundColor: C.bg,
+            border: `0.5px solid ${C.line}`,
             borderRadius: "12px",
             padding: "28px",
           }}
@@ -1141,7 +1127,7 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
               fontFamily: sans,
               fontSize: "10px",
               letterSpacing: "2px",
-              color: C.textTertiary,
+              color: C.stone,
               display: "block",
               textTransform: "uppercase",
               marginBottom: "16px",
@@ -1172,11 +1158,11 @@ export function Section6Kontakt({ isVertical = false, breakpoint = "desktop", on
             fontSize: "9px",
             letterSpacing: "1px",
             textTransform: "uppercase",
-            color: C.textTertiary,
+            color: C.stone,
             transition: "color 0.3s ease",
           }}
-          onMouseEnter={(e) => (e.currentTarget.style.color = C.textSecondary)}
-          onMouseLeave={(e) => (e.currentTarget.style.color = C.textTertiary)}
+          onMouseEnter={(e) => (e.currentTarget.style.color = C.charcoal)}
+          onMouseLeave={(e) => (e.currentTarget.style.color = C.stone)}
         >
           <span
             style={{

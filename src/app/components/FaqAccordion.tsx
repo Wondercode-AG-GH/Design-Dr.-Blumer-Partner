@@ -1,17 +1,6 @@
 import { useEffect, useId, useState } from "react";
-
-const sans = "'Inter', sans-serif";
-const serif = "'Cormorant Garamond', serif";
-
-const C = {
-  dark: "#1A1916",
-  charcoal: "#3A3835",
-  stone: "#8A857C",
-  muted: "#B0ACA5",
-  line: "#D8D5CF",
-};
-
-const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
+import { C, serif, sans } from "../tokens";
+import { EASE } from "../../styles/motion";
 
 export interface FaqItem {
   question: string;
@@ -170,7 +159,7 @@ function FaqRow({
             marginTop: "6px",
             color: C.stone,
             transform: open ? "rotate(45deg)" : "rotate(0deg)",
-            transition: `transform 300ms ${EASE}`,
+            transition: `transform 300ms ${EASE.standard}`,
           }}
         >
           <span
@@ -206,7 +195,7 @@ function FaqRow({
         style={{
           display: "grid",
           gridTemplateRows: open ? "1fr" : "0fr",
-          transition: `grid-template-rows 350ms ${EASE}`,
+          transition: `grid-template-rows 350ms ${EASE.standard}`,
         }}
       >
         <div style={{ overflow: "hidden" }}>

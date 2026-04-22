@@ -4,15 +4,7 @@ import philosophyImg from "figma:asset/a44e63e47eecf6c5811f4525d593bd929e31be63.
 import { LAYOUT, getLayout, getTextColumnStyle, SPACING } from "../layout";
 import type { Breakpoint } from "./useBreakpoint";
 
-/* ─── Design tokens ─── */
-const C = {
-  bg:       "#F9F9F7",
-  dark:     "#1A1916",
-  charcoal: "#3A3835",
-  stone:    "#8A857C",
-};
-const serif = "'Cormorant Garamond', serif";
-const sans  = "'Inter', sans-serif";
+import { C, serif, sans } from "../tokens";
 
 /* ─── Section geometry ────────────────────────────────────────
    Layout order: Hero(110) + Breathing(8)

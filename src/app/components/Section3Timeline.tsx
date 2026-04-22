@@ -4,16 +4,7 @@ import { LAYOUT } from "../layout";
 import { AnlageprozessStepOrdinal, ORDINAL_FONT_SIZE } from "./AnlageprozessStepOrdinal";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
 
-/* ─── Design tokens ─── */
-const C = {
-  dark:    "#1A1916",   // strip bottom · numbers 03–05 · separator
-  charcoal:"#3A3835",   // descriptions 03–05
-  stone:   "#8A857C",   // descriptions 01–02
-  line:    "#D8D5CF",   // strip top · numbers 01–02
-  warm:    "#989071",   // footer hint (unchanged)
-};
-const serif = "'Cormorant Garamond', serif";
-const sans  = "'Inter', sans-serif";
+import { C, serif, sans } from "../tokens";
 
 /* ─── Step definitions ─── */
 const STEPS = [
@@ -183,7 +174,7 @@ export function Section3Timeline({ scrollX, isVertical = false, isDetailMode = f
         alignItems:     "center",
         justifyContent: "center",
         overflow:       "hidden",
-        backgroundColor: "#F9F9F7",
+        backgroundColor: C.bg,
       } : {
         top:            0,
         bottom:         0,

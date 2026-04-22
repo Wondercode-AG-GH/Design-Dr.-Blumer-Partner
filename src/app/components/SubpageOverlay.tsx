@@ -2,18 +2,8 @@ import { useEffect } from "react";
 import { createPortal } from "react-dom";
 import type { ReactNode } from "react";
 
-/* ─── Design tokens ─── */
-const C = {
-  bg:       "#F9F9F7",
-  dark:     "#1A1916",
-  stone:    "#8A857C",
-  line:     "#D8D5CF",
-};
-
-const serif = "'Cormorant Garamond', serif";
-const sans  = "'Inter', sans-serif";
-
-const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
+import { C, serif, sans } from "../tokens";
+import { EASE } from "../../styles/motion";
 
 interface SubpageOverlayProps {
   isOpen: boolean;
@@ -127,7 +117,7 @@ export function SubpageOverlay({
           padding: "80px 48px 40px",
           opacity: isOpen ? 1 : 0,
           transform: isOpen ? "translateY(0)" : "translateY(-12px)",
-          transition: `opacity 600ms ease-out ${isOpen ? "500ms" : "0ms"}, transform 600ms ${EASE} ${isOpen ? "500ms" : "0ms"}`,
+          transition: `opacity 600ms ease-out ${isOpen ? "500ms" : "0ms"}, transform 600ms ${EASE.standard} ${isOpen ? "500ms" : "0ms"}`,
         }}
       >
         <span

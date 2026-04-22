@@ -13,6 +13,8 @@ import { usePrefersReducedMotion } from "./components/usePrefersReducedMotion";
 import { Navigation } from "./components/Navigation";
 import { LoginOverlay } from "./components/LoginOverlay";
 import { LegalPage, useLegalRoute } from "./components/LegalPage";
+import { C, serif, sans } from "./tokens";
+import { EASE } from "../styles/motion";
 import { useHorizontalScroll } from "./components/useHorizontalScroll";
 import { useBreakpoint } from "./components/useBreakpoint";
 import {
@@ -36,22 +38,7 @@ import notebookImg from "figma:asset/29fb6897d14923649548800503cc773b55cb5083.pn
 import teamPhotoImg from "figma:asset/b4ed6cb147950f15472091157e857a2d7f1ce0e8.png";
 import philosophyImg from "figma:asset/a44e63e47eecf6c5811f4525d593bd929e31be63.png";
 
-/* ═════════════════════════════════════════════════════════
-   LIGHT MODE — SWISS LUXURY PALETTE
-   ════════════════════════════════════════════════════════ */
-const C = {
-  bg: "#F9F9F7",
-  dark: "#1A1916",
-  charcoal: "#3A3835",
-  stone: "#8A857C",
-  muted: "#B0ACA5",
-  line: "#D8D5CF",
-  accent: "#6B665E",
-  subtle: "#E8E6E1",
-};
-
-const serif = "'Cormorant Garamond', serif";
-const sans = "'Inter', sans-serif";
+/* Tokens: C, serif, sans from ./tokens.ts; EASE from ../styles/motion.ts */
 
 /* ═══════════════════════════════════════════════════════════
    SWISS IMAGERY
@@ -90,7 +77,7 @@ function PreloadScreen({ onComplete }: { onComplete: () => void }) {
   return (
     <motion.div
       className="fixed inset-0 z-[200] flex items-center justify-center"
-      style={{ backgroundColor: "#989071" }}
+      style={{ backgroundColor: C.warm }}
       animate={{ y: sliding ? "-100%" : "0%" }}
       transition={
         sliding
@@ -184,7 +171,7 @@ function ContactForm({ scrollX, isVertical = false }: { scrollX: number; isVerti
                 fontSize: "12px",
                 letterSpacing: "0.04em",
               }}
-              className="placeholder:text-[#B0ACA5] focus:border-[#8A857C]"
+              className="placeholder:text-tellian-muted focus:border-tellian-stone"
             />
             <input
               type="email"
@@ -199,7 +186,7 @@ function ContactForm({ scrollX, isVertical = false }: { scrollX: number; isVerti
                 fontSize: "12px",
                 letterSpacing: "0.04em",
               }}
-              className="placeholder:text-[#B0ACA5] focus:border-[#8A857C]"
+              className="placeholder:text-tellian-muted focus:border-tellian-stone"
             />
             <textarea
               placeholder="Ihre Nachricht"
@@ -215,7 +202,7 @@ function ContactForm({ scrollX, isVertical = false }: { scrollX: number; isVerti
                 letterSpacing: "0.04em",
                 resize: "none",
               }}
-              className="placeholder:text-[#B0ACA5] focus:border-[#8A857C]"
+              className="placeholder:text-tellian-muted focus:border-tellian-stone"
             />
             <CtaButton href="#" onClick={(e) => { e.preventDefault(); handleSubmit(e as any); }}>
               Anfrage senden
@@ -482,7 +469,6 @@ function Section3Vermoegensverwaltung({
              horizontal stepper + detail content below.
      ═══════════════════════════════════════════════════════════ */
 
-  const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
 
   /* ── OVERVIEW section (always rendered inside the scroll strip) ── */
   const overviewMarkup = (
@@ -498,7 +484,7 @@ function Section3Vermoegensverwaltung({
           ...textColStyle,
           opacity: isDetail ? 0 : 1,
           transform: isDetail ? "translateX(-50px)" : "translateX(0)",
-          transition: `opacity 500ms ${EASE}, transform 500ms ${EASE}`,
+          transition: `opacity 500ms ${EASE.standard}, transform 500ms ${EASE.standard}`,
           pointerEvents: isDetail ? "none" : "auto",
         }}
       >
@@ -632,7 +618,7 @@ function Section3Vermoegensverwaltung({
           padding: "80px 48px 40px",
           opacity: isDetail ? 1 : 0,
           transform: isDetail ? "translateY(0)" : "translateY(-12px)",
-          transition: `opacity 600ms ease-out ${isDetail ? "500ms" : "0ms"}, transform 600ms ${EASE} ${isDetail ? "500ms" : "0ms"}`,
+          transition: `opacity 600ms ease-out ${isDetail ? "500ms" : "0ms"}, transform 600ms ${EASE.standard} ${isDetail ? "500ms" : "0ms"}`,
         }}
       >
         <span
@@ -711,7 +697,7 @@ function Section3Vermoegensverwaltung({
                     color: C.stone, whiteSpace: "nowrap",
                     opacity: isDetail ? 1 : 0,
                     transform: isDetail ? "translateY(0)" : "translateY(6px)",
-                    transition: `opacity 400ms ease-out ${isDetail ? `${500 + i * 80}ms` : "0ms"}, transform 400ms ${EASE} ${isDetail ? `${500 + i * 80}ms` : "0ms"}`,
+                    transition: `opacity 400ms ease-out ${isDetail ? `${500 + i * 80}ms` : "0ms"}, transform 400ms ${EASE.standard} ${isDetail ? `${500 + i * 80}ms` : "0ms"}`,
                   }}
                 >
                   {step.shortLabel}
@@ -732,7 +718,7 @@ function Section3Vermoegensverwaltung({
                     flexShrink: 0,
                     transformOrigin: "left center",
                     transform: isDetail ? "scaleX(1)" : "scaleX(0)",
-                    transition: `transform 450ms ${EASE} ${isDetail ? `${1100 + i * 80}ms` : "0ms"}`,
+                    transition: `transform 450ms ${EASE.standard} ${isDetail ? `${1100 + i * 80}ms` : "0ms"}`,
                   }}
                 />
               )}
@@ -746,7 +732,7 @@ function Section3Vermoegensverwaltung({
         style={{
           opacity: isDetail ? 1 : 0,
           transform: isDetail ? "translateY(0)" : "translateY(16px)",
-          transition: `opacity 500ms ease-out ${isDetail ? "900ms" : "0ms"}, transform 500ms ${EASE} ${isDetail ? "900ms" : "0ms"}`,
+          transition: `opacity 500ms ease-out ${isDetail ? "900ms" : "0ms"}, transform 500ms ${EASE.standard} ${isDetail ? "900ms" : "0ms"}`,
         }}
       >
         <AnlageprozessDetail isMobile={false} onContactClick={handleContactClick} />
@@ -904,7 +890,6 @@ function Section4Anlagestrategien({
   }
 
   /* Desktop */
-  const EASE_FADE = "cubic-bezier(0.4, 0, 0.2, 1)";
 
   /* ─── Overview markup — normal section inside horizontal scroll strip ─── */
   const overviewMarkup = (
@@ -920,7 +905,7 @@ function Section4Anlagestrategien({
           ...textColStyle,
           opacity: isDetail ? 0 : 1,
           transform: isDetail ? "translateX(-50px)" : "translateX(0)",
-          transition: `opacity 500ms ${EASE_FADE}, transform 500ms ${EASE_FADE}`,
+          transition: `opacity 500ms ${EASE.in}, transform 500ms ${EASE.in}`,
           pointerEvents: isDetail ? "none" : "auto",
         }}
       >

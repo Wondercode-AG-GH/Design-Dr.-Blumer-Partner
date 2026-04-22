@@ -1,14 +1,7 @@
 import type { CSSProperties } from "react";
 import { useBreakpoint } from "./useBreakpoint";
 
-const sans = "'Inter', sans-serif";
-
-const C = {
-  dark: "#1A1916",
-  charcoal: "#3A3835",
-  line: "#D8D5CF",
-  bg: "#F9F9F7",
-};
+import { C, sans } from "../tokens";
 
 interface CtaButtonProps {
   href: string;
@@ -67,7 +60,7 @@ export function CtaButton({
           active:scale-[0.98]
           px-6 py-4
           text-[11px]
-          hover:bg-[#3A3835]
+          hover:bg-tellian-charcoal
           ${widthFull ? "w-full" : ""}
           ${className}
         `}
@@ -98,10 +91,10 @@ export function CtaButton({
       className={`
         group inline-flex items-center gap-3
         uppercase tracking-[0.16em]
-        border border-[#D8D5CF]
+        border border-tellian-line
         rounded-none
         transition-[background-color,border-color] duration-[400ms] ease-[cubic-bezier(0.16,1,0.3,1)]
-        hover:border-[#1A1916] hover:bg-[#F2F1EC]
+        hover:border-tellian-dark hover:bg-tellian-bg-secondary
         active:scale-[0.98]
         px-6 py-3 md:px-8 md:py-4
         text-[10px] md:text-[11px]

@@ -20,18 +20,7 @@ const VERMOEGENSVERWALTUNG_FAQ: readonly FaqItem[] = [
   },
 ];
 
-/* ─── Design tokens ─── */
-const C = {
-  bg:       "#F9F9F7",
-  dark:     "#1A1916",
-  charcoal: "#3A3835",
-  stone:    "#8A857C",
-  muted:    "#B0ACA5",
-  line:     "#D8D5CF",
-};
-
-const serif = "'Cormorant Garamond', serif";
-const sans  = "'Inter', sans-serif";
+import { C, serif, sans } from "../tokens";
 
 interface AnlageprozessDetailProps {
   isMobile: boolean;

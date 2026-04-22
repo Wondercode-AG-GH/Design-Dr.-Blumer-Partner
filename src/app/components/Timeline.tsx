@@ -6,21 +6,8 @@ import { useRef, useEffect, useState, ReactNode } from "react";
    vertical stems, and progressive scroll-driven reveals.
    ═══════════════════════════════════════════════════════════ */
 
-const EASE = "cubic-bezier(0.25, 0.1, 0.25, 1)";
-const EASE_EXPO = "cubic-bezier(0.16, 1, 0.3, 1)";
-
-const C = {
-  bg: "#F9F9F7",
-  dark: "#1A1916",
-  charcoal: "#3A3835",
-  stone: "#8A857C",
-  muted: "#B0ACA5",
-  line: "#D8D5CF",
-  lineLight: "#E8E6E1",
-};
-
-const serif = "'Cormorant Garamond', serif";
-const sans = "'Inter', sans-serif";
+import { C, serif, sans } from "../tokens";
+import { EASE } from "../../styles/motion";
 
 /* ── Scroll-aware progress hook ── */
 function useElementProgress(
@@ -344,7 +331,7 @@ function MilestoneNode({
           transformOrigin: "bottom center",
           transform: `translateX(-0.5px) scaleY(${stemReveal})`,
           backgroundColor: C.line,
-          transition: `transform 1.2s ${EASE_EXPO}`,
+          transition: `transform 1.2s ${EASE.standard}`,
         }}
       />
 
@@ -357,7 +344,7 @@ function MilestoneNode({
           height: isExpanded ? "7px" : "5px",
           backgroundColor: isExpanded ? C.charcoal : C.stone,
           transform: `translate(-50%, -50%) scale(${stemReveal})`,
-          transition: `transform 0.8s ${EASE_EXPO}`,
+          transition: `transform 0.8s ${EASE.standard}`,
         }}
       />
 
@@ -368,7 +355,7 @@ function MilestoneNode({
           bottom: `calc(100% - ${AXIS_TOP} + ${stemHeight}px + 8px)`,
           transform: `translateX(-50%) translate3d(0, ${contentY}px, 0)`,
           opacity,
-          transition: `transform 0.8s ${EASE}, opacity 1.0s ${EASE}`,
+          transition: `transform 0.8s ${EASE}, opacity 1.0s ${EASE.nav}`,
           width: isExpanded ? "clamp(240px, 18vw, 320px)" : "clamp(160px, 12vw, 220px)",
         }}
       >
@@ -378,7 +365,7 @@ function MilestoneNode({
             color: C.charcoal,
             opacity: iconReveal,
             transform: `scale(${0.85 + iconReveal * 0.15})`,
-            transition: `opacity 1s ${EASE}, transform 1s ${EASE_EXPO}`,
+            transition: `opacity 1s ${EASE}, transform 1s ${EASE.standard}`,
           }}
           className="mb-5"
         >
@@ -460,7 +447,7 @@ function MilestoneNode({
           top: `calc(${AXIS_TOP} + 14px)`,
           transform: "translateX(-50%)",
           opacity: opacity * 0.35,
-          transition: `opacity 1s ${EASE}`,
+          transition: `opacity 1s ${EASE.nav}`,
         }}
       >
         <span
@@ -518,7 +505,7 @@ function TimelineAxis({ scrollX }: { scrollX: number }) {
       {/* Faint background track */}
       <div
         className="absolute inset-0"
-        style={{ backgroundColor: C.lineLight, opacity: 0.6 }}
+        style={{ backgroundColor: C.subtle, opacity: 0.6 }}
       />
       {/* Drawn line — reveals progressively */}
       <div
@@ -527,7 +514,7 @@ function TimelineAxis({ scrollX }: { scrollX: number }) {
           backgroundColor: C.stone,
           opacity: 0.35,
           width: `${lineProgress * 100}%`,
-          transition: `width 2.2s ${EASE_EXPO}`,
+          transition: `width 2.2s ${EASE.standard}`,
         }}
       />
       {/* Leading dot at the drawn edge */}
@@ -541,7 +528,7 @@ function TimelineAxis({ scrollX }: { scrollX: number }) {
           left: `${lineProgress * 100}%`,
           transform: "translateX(-1.5px)",
           opacity: lineProgress > 0.02 && lineProgress < 0.98 ? 0.5 : 0,
-          transition: `left 2.2s ${EASE_EXPO}, opacity 0.6s ${EASE}`,
+          transition: `left 2.2s ${EASE.standard}, opacity 0.6s ${EASE.nav}`,
         }}
       />
     </div>
@@ -572,7 +559,7 @@ function TimelineHeader({ scrollX }: { scrollX: number }) {
         style={{
           opacity,
           transform: `translate3d(0, ${y}px, 0)`,
-          transition: `transform 0.5s ${EASE}, opacity 0.9s ${EASE}`,
+          transition: `transform 0.5s ${EASE}, opacity 0.9s ${EASE.nav}`,
         }}
       >
         <span

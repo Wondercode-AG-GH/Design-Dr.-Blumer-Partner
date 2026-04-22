@@ -1,9 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { usePrefersReducedMotion } from "./usePrefersReducedMotion";
-
-const serif = "'Cormorant Garamond', serif";
-const sans  = "'Inter', sans-serif";
+import { C, serif, sans } from "../tokens";
 
 /* ─── Accent line + text row ─── */
 function AccentRow({
@@ -27,7 +25,7 @@ function AccentRow({
         style={{
           fontFamily: sans,
           fontSize:   "clamp(13px, 3.5vw, 15px)",
-          color:      "#8A857C",
+          color:      C.stone,
           lineHeight: 1.4,
         }}
       >
@@ -80,7 +78,7 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
         justifyContent: "center",
         opacity:        visible ? 1 : 0,
         transition:     "opacity 600ms ease-out",
-        backgroundColor: "#F9F9F7",
+        backgroundColor: C.bg,
         padding:        "24px",
       } : {
         top:            0,
@@ -112,7 +110,7 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
         <div
           style={{
             flex:            1,
-            backgroundColor: "#1A1916",
+            backgroundColor: C.dark,
             display:         "flex",
             flexDirection:   "column",
             justifyContent:  "flex-end",
@@ -126,7 +124,7 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
               fontFamily:    sans,
               fontSize:      "10px",
               letterSpacing: "0.2em",
-              color:         "#6B665E",
+              color:         C.accent,
               textTransform: "uppercase",
               display:       "block",
               marginBottom:  "20px",
@@ -146,7 +144,7 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
                   fontFamily:    serif,
                   fontSize:      "clamp(40px, 9vw, 64px)",
                   letterSpacing: "-0.03em",
-                  color:         "#F9F9F7",
+                  color:         C.bg,
                   lineHeight:    1,
                   display:       "block",
                 }}
@@ -159,7 +157,7 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
                   fontFamily:    serif,
                   fontSize:      "clamp(40px, 9vw, 64px)",
                   letterSpacing: "-0.03em",
-                  color:         "#F9F9F7",
+                  color:         C.bg,
                   lineHeight:    1,
                   display:       "block",
                 }}
@@ -178,9 +176,9 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
               gap:           "14px",
             }}
           >
-            <AccentRow text="Makroindikatoren und Konjunkturzyklen"     lineColor="#989071" />
-            <AccentRow text="Systematische Bewertung der Anlageklassen" lineColor="#989071" />
-            <AccentRow text="Strategischer Horizont: 3–5 Jahre"         lineColor="#989071" />
+            <AccentRow text="Makroindikatoren und Konjunkturzyklen"     lineColor=C.warm />
+            <AccentRow text="Systematische Bewertung der Anlageklassen" lineColor=C.warm />
+            <AccentRow text="Strategischer Horizont: 3–5 Jahre"         lineColor=C.warm />
           </div>
         </div>
 
@@ -192,7 +190,7 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
             height:          isVertical ? "auto" : "72px",
             minHeight:       isVertical ? "56px" : undefined,
             flexShrink:      0,
-            backgroundColor: "#989071",
+            backgroundColor: C.warm,
             display:         "flex",
             alignItems:      "center",
             justifyContent:  "space-between",
@@ -205,7 +203,7 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
               fontFamily: serif,
               fontSize:   "clamp(18px, 5vw, 24px)",
               fontStyle:  "italic",
-              color:      "#F9F9F7",
+              color:      C.bg,
               lineHeight: 1,
             }}
           >
@@ -217,7 +215,7 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
               fontFamily:    sans,
               fontSize:      "clamp(9px, 2.5vw, 10px)",
               letterSpacing: "0.15em",
-              color:         "#D8D5CF",
+              color:         C.line,
               textTransform: "uppercase",
               whiteSpace:    "nowrap",
             }}
@@ -232,7 +230,7 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
         <div
           style={{
             flex:            1,
-            backgroundColor: "#F9F9F7",
+            backgroundColor: C.bg,
             display:         "flex",
             flexDirection:   "column",
             justifyContent:  "flex-start",
@@ -250,7 +248,7 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
                   fontFamily:    serif,
                   fontSize:      "clamp(40px, 9vw, 64px)",
                   letterSpacing: "-0.03em",
-                  color:         "#1A1916",
+                  color:         C.dark,
                   lineHeight:    1,
                   display:       "block",
                 }}
@@ -263,7 +261,7 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
                   fontFamily:    serif,
                   fontSize:      "clamp(40px, 9vw, 64px)",
                   letterSpacing: "-0.03em",
-                  color:         "#1A1916",
+                  color:         C.dark,
                   lineHeight:    1,
                   display:       "block",
                 }}
@@ -279,7 +277,7 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
               fontFamily:    sans,
               fontSize:      "10px",
               letterSpacing: "0.2em",
-              color:         "#B0ACA5",
+              color:         C.muted,
               textTransform: "uppercase",
               display:       "block",
               marginTop:     "20px",
@@ -297,9 +295,9 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
               gap:           "14px",
             }}
           >
-            <AccentRow text="Quantitative Modelle und Datenanalyse"   lineColor="#D8D5CF" />
-            <AccentRow text="Technische Analyse und Marktpsychologie" lineColor="#D8D5CF" />
-            <AccentRow text="Kurzfristige Trends und Opportunitäten"  lineColor="#D8D5CF" />
+            <AccentRow text="Quantitative Modelle und Datenanalyse"   lineColor=C.line />
+            <AccentRow text="Technische Analyse und Marktpsychologie" lineColor=C.line />
+            <AccentRow text="Kurzfristige Trends und Opportunitäten"  lineColor=C.line />
           </div>
         </div>
       </div>

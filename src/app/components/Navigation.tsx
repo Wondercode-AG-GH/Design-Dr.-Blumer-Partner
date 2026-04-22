@@ -2,13 +2,8 @@ import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import React from "react";
 import type { Breakpoint } from "./useBreakpoint";
-
-/* ─── Typography ─── */
-const serif = "'Cormorant Garamond', serif";
-const sans  = "'Inter', sans-serif";
-
-const EASE_ARR: [number, number, number, number] = [0.25, 0.1, 0.25, 1];
-const EASE = "cubic-bezier(0.25, 0.1, 0.25, 1)";
+import { C, serif, sans } from "../tokens";
+import { EASE } from "../../styles/motion";
 
 const BAR_W   = 48;
 const PANEL_W = 300;
@@ -45,7 +40,7 @@ function getActiveIndex(progress: number): number {
 
 /* ═══════ ICONS ═══════ */
 
-function LockIcon({ size = 18, color = "#1a1a1a", strokeWidth = 1.5 }: { size?: number; color?: string; strokeWidth?: number }) {
+function LockIcon({ size = 18, color = C.dark, strokeWidth = 1.5 }: { size?: number; color?: string; strokeWidth?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="4" y="11" width="16" height="11" stroke={color} strokeWidth={strokeWidth} strokeLinejoin="round" />
@@ -175,7 +170,7 @@ export function Navigation({
             borderBottom: "1px solid rgba(216,213,207,0.4)",
             opacity: introComplete ? 1 : 0,
             transform: visible ? "translateY(0)" : "translateY(-100%)",
-            transition: `transform 0.4s ${EASE}, opacity 0.4s ${EASE}`,
+            transition: `transform 0.4s ${EASE.nav}, opacity 0.4s ${EASE.nav}`,
           }}
         >
           {/* Logo */}
@@ -189,7 +184,7 @@ export function Navigation({
                 fontSize: "13px",
                 fontWeight: 700,
                 letterSpacing: "2.5px",
-                color: "#1a1a1a",
+                color: C.dark,
                 textTransform: "uppercase",
                 userSelect: "none",
               }}
@@ -220,23 +215,23 @@ export function Navigation({
           >
             <div
               style={{
-                width: 22, height: 1.5, backgroundColor: "#1a1a1a",
+                width: 22, height: 1.5, backgroundColor: C.dark,
                 transform: expanded ? "rotate(45deg) translate(2px, 2px)" : "none",
-                transition: `transform 0.3s ${EASE}`,
+                transition: `transform 0.3s ${EASE.nav}`,
               }}
             />
             <div
               style={{
-                width: 22, height: 1.5, backgroundColor: "#1a1a1a",
+                width: 22, height: 1.5, backgroundColor: C.dark,
                 opacity: expanded ? 0 : 1,
-                transition: `opacity 0.2s ${EASE}`,
+                transition: `opacity 0.2s ${EASE.nav}`,
               }}
             />
             <div
               style={{
-                width: 22, height: 1.5, backgroundColor: "#1a1a1a",
+                width: 22, height: 1.5, backgroundColor: C.dark,
                 transform: expanded ? "rotate(-45deg) translate(2px, -2px)" : "none",
-                transition: `transform 0.3s ${EASE}`,
+                transition: `transform 0.3s ${EASE.nav}`,
               }}
             />
           </button>
@@ -247,11 +242,11 @@ export function Navigation({
           {expanded && (
             <motion.div
               className="fixed inset-0 z-[60] flex flex-col"
-              style={{ backgroundColor: "#F2F1EC" }}
+              style={{ backgroundColor: C.bgSecondary }}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.4, ease: EASE_ARR }}
+              transition={{ duration: 0.4, ease: EASE.navArr }}
             >
               {/* Header with close */}
               <div
@@ -271,7 +266,7 @@ export function Navigation({
                     fontSize: "13px",
                     fontWeight: 700,
                     letterSpacing: "2.5px",
-                    color: "#1a1a1a",
+                    color: C.dark,
                     textTransform: "uppercase",
                     userSelect: "none",
                   }}
@@ -295,8 +290,8 @@ export function Navigation({
                   aria-label="Menü schliessen"
                 >
                   <svg width="18" height="18" viewBox="0 0 16 16" fill="none">
-                    <line x1="1.5" y1="1.5" x2="14.5" y2="14.5" stroke="#1a1a1a" strokeWidth="1.25" strokeLinecap="round" />
-                    <line x1="14.5" y1="1.5" x2="1.5" y2="14.5" stroke="#1a1a1a" strokeWidth="1.25" strokeLinecap="round" />
+                    <line x1="1.5" y1="1.5" x2="14.5" y2="14.5" stroke={C.dark} strokeWidth="1.25" strokeLinecap="round" />
+                    <line x1="14.5" y1="1.5" x2="1.5" y2="14.5" stroke={C.dark} strokeWidth="1.25" strokeLinecap="round" />
                   </svg>
                 </button>
               </div>
@@ -311,7 +306,7 @@ export function Navigation({
                         key={item.num}
                         initial={{ opacity: 0, y: 12 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.35, delay: 0.05 + i * 0.04, ease: EASE_ARR }}
+                        transition={{ duration: 0.35, delay: 0.05 + i * 0.04, ease: EASE.navArr }}
                         onClick={() => handleNavigate(i)}
                         style={{
                           outline: "none",
@@ -332,7 +327,7 @@ export function Navigation({
                               transform: "translateY(-50%)",
                               width: 2,
                               height: 28,
-                              backgroundColor: "#989071",
+                              backgroundColor: C.warm,
                             }}
                           />
                         )}
@@ -340,7 +335,7 @@ export function Navigation({
                           style={{
                             fontFamily: sans,
                             fontSize: "11px",
-                            color: isActive ? "#989071" : "#bbb",
+                            color: isActive ? C.warm : "#bbb",
                             display: "block",
                             marginBottom: 3,
                           }}
@@ -351,7 +346,7 @@ export function Navigation({
                           style={{
                             fontFamily: serif,
                             fontSize: breakpoint === "mobile" ? "18px" : "20px",
-                            color: "#1a1a1a",
+                            color: C.dark,
                             display: "block",
                             lineHeight: 1.2,
                           }}
@@ -395,7 +390,7 @@ export function Navigation({
                           style={{
                             outline: "none", border: "none", background: "transparent", cursor: "pointer",
                             fontFamily: sans, fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em",
-                            textTransform: "uppercase", color: lang === l ? "#1a1a1a" : "#bbb", padding: 0,
+                            textTransform: "uppercase", color: lang === l ? C.dark : "#bbb", padding: 0,
                           }}
                         >
                           {l}
@@ -414,13 +409,13 @@ export function Navigation({
                     aria-haspopup="dialog"
                     style={{
                       display: "flex", alignItems: "center", gap: 8,
-                      backgroundColor: "#1a1a1a", color: "#F2F1EC",
+                      backgroundColor: C.dark, color: C.bgSecondary,
                       fontFamily: sans, fontSize: "11px", fontWeight: 700,
                       letterSpacing: "1.5px", textTransform: "uppercase",
                       padding: "10px 16px", border: "none", cursor: "pointer",
                     }}
                   >
-                    <LockIcon size={14} color="#F2F1EC" strokeWidth={1.5} />
+                    <LockIcon size={14} color=C.bgSecondary strokeWidth={1.5} />
                     Login
                   </button>
                 </div>
@@ -447,7 +442,7 @@ export function Navigation({
           opacity:       introComplete ? 1 : 0,
           transform:     visible ? "translateX(0)" : "translateX(-16px)",
           filter:        visible ? "opacity(1)" : "opacity(0)",
-          transition:    `transform 0.9s ${EASE}, filter 0.7s ${EASE}, opacity 0.6s ${EASE}`,
+          transition:    `transform 0.9s ${EASE.nav}, filter 0.7s ${EASE.nav}, opacity 0.6s ${EASE.nav}`,
           pointerEvents: visible ? "auto" : "none",
         }}
       >
@@ -463,7 +458,7 @@ export function Navigation({
               fontSize:      "15px",
               fontWeight:    700,
               letterSpacing: "4px",
-              color:         "#1a1a1a",
+              color:         C.dark,
               textTransform: "uppercase",
               writingMode:   "vertical-rl",
               transform:     "rotate(180deg)",
@@ -498,7 +493,7 @@ export function Navigation({
             {[0, 1, 2].map((n) => (
               <div
                 key={n}
-                style={{ width: 20, height: 1.5, backgroundColor: "#1a1a1a" }}
+                style={{ width: 20, height: 1.5, backgroundColor: C.dark }}
               />
             ))}
           </div>
@@ -527,7 +522,7 @@ export function Navigation({
                   style={{
                     width:           32,
                     height:          20,
-                    backgroundColor: isActive ? "#1a1a1a" : "transparent",
+                    backgroundColor: isActive ? C.dark : "transparent",
                     color:           isActive ? "#ffffff" : "#999",
                     fontFamily:      sans,
                     fontSize:        "10px",
@@ -540,7 +535,7 @@ export function Navigation({
                     display:         "flex",
                     alignItems:      "center",
                     justifyContent:  "center",
-                    transition:      `background-color 0.25s ${EASE}, color 0.25s ${EASE}`,
+                    transition:      `background-color 0.25s ${EASE.nav}, color 0.25s ${EASE.nav}`,
                     outline:         "none",
                   }}
                 >
@@ -569,12 +564,12 @@ export function Navigation({
               alignItems:    "center",
               gap:           "5px",
               padding:       0,
-              transition:    `color 0.25s ${EASE}`,
+              transition:    `color 0.25s ${EASE.nav}`,
             }}
           >
             <LockIcon
               size={18}
-              color={loginHover ? "#989071" : "#1a1a1a"}
+              color={loginHover ? C.warm : C.dark}
               strokeWidth={1.5}
             />
             <span
@@ -584,8 +579,8 @@ export function Navigation({
                 fontWeight:    600,
                 letterSpacing: "1.5px",
                 textTransform: "uppercase",
-                color:         loginHover ? "#989071" : "#1a1a1a",
-                transition:    `color 0.25s ${EASE}`,
+                color:         loginHover ? C.warm : C.dark,
+                transition:    `color 0.25s ${EASE.nav}`,
                 userSelect:    "none",
               }}
             >
@@ -602,7 +597,7 @@ export function Navigation({
           width:       BAR_W,
           borderRight: "1px solid #D8D5CF",
           opacity:     introComplete && visible && !expanded ? 0.3 : 0,
-          transition:  `opacity 0.9s ${EASE}`,
+          transition:  `opacity 0.9s ${EASE.nav}`,
         }}
       />
 
@@ -618,7 +613,7 @@ export function Navigation({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.45, ease: EASE_ARR }}
+              transition={{ duration: 0.45, ease: EASE.navArr }}
               style={{ backgroundColor: "rgba(0,0,0,0.08)" }}
               onClick={() => setExpanded(false)}
             />
@@ -626,11 +621,11 @@ export function Navigation({
             {/* Panel */}
             <motion.div
               className="fixed top-0 left-0 h-screen z-[60] flex flex-col"
-              style={{ width: PANEL_W, backgroundColor: "#F2F1EC" }}
+              style={{ width: PANEL_W, backgroundColor: C.bgSecondary }}
               initial={{ x: -PANEL_W + BAR_W, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               exit={{ x: -PANEL_W + BAR_W, opacity: 0 }}
-              transition={{ duration: 0.6, ease: EASE_ARR }}
+              transition={{ duration: 0.6, ease: EASE.navArr }}
             >
               {/* Header */}
               <div
@@ -650,7 +645,7 @@ export function Navigation({
                       fontFamily:    sans,
                       fontSize:      "12px",
                       letterSpacing: "2px",
-                      color:         "#1a1a1a",
+                      color:         C.dark,
                       textTransform: "uppercase",
                       userSelect:    "none",
                     }}
@@ -667,8 +662,8 @@ export function Navigation({
                   aria-label="Menü schliessen"
                 >
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <line x1="1.5" y1="1.5" x2="14.5" y2="14.5" stroke="#1a1a1a" strokeWidth="1.25" strokeLinecap="round" />
-                    <line x1="14.5" y1="1.5" x2="1.5"  y2="14.5" stroke="#1a1a1a" strokeWidth="1.25" strokeLinecap="round" />
+                    <line x1="1.5" y1="1.5" x2="14.5" y2="14.5" stroke={C.dark} strokeWidth="1.25" strokeLinecap="round" />
+                    <line x1="14.5" y1="1.5" x2="1.5"  y2="14.5" stroke={C.dark} strokeWidth="1.25" strokeLinecap="round" />
                   </svg>
                 </button>
               </div>
@@ -687,7 +682,7 @@ export function Navigation({
                         initial={{ opacity: 0, x: -10 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -8 }}
-                        transition={{ duration: 0.4, delay: 0.06 + i * 0.04, ease: EASE_ARR }}
+                        transition={{ duration: 0.4, delay: 0.06 + i * 0.04, ease: EASE.navArr }}
                         onClick={() => { onNavigate(item.progress); setExpanded(false); }}
                         style={{
                           outline:       "none",
@@ -717,9 +712,9 @@ export function Navigation({
                                 transform:       "translateY(-50%)",
                                 width:           2,
                                 height:          32,
-                                backgroundColor: "#989071",
+                                backgroundColor: C.warm,
                               }}
-                              transition={{ duration: 0.35, ease: EASE_ARR }}
+                              transition={{ duration: 0.35, ease: EASE.navArr }}
                             />
                           )}
                         </AnimatePresence>
@@ -728,10 +723,10 @@ export function Navigation({
                           style={{
                             fontFamily:   sans,
                             fontSize:     "11px",
-                            color:        isActive ? "#989071" : "#bbb",
+                            color:        isActive ? C.warm : "#bbb",
                             display:      "block",
                             marginBottom: "3px",
-                            transition:   `color 0.35s ${EASE}`,
+                            transition:   `color 0.35s ${EASE.nav}`,
                           }}
                         >
                           {item.num}
@@ -740,7 +735,7 @@ export function Navigation({
                           style={{
                             fontFamily: serif,
                             fontSize:   "16px",
-                            color:      "#1a1a1a",
+                            color:      C.dark,
                             display:    "block",
                             lineHeight: 1.2,
                           }}
@@ -795,8 +790,8 @@ export function Navigation({
                           style={{
                             outline: "none", border: "none", background: "transparent", cursor: "pointer",
                             fontFamily: sans, fontSize: "11px", fontWeight: 700, letterSpacing: "0.08em",
-                            textTransform: "uppercase", color: lang === l ? "#1a1a1a" : "#bbb", padding: 0,
-                            transition: `color 0.25s ${EASE}`,
+                            textTransform: "uppercase", color: lang === l ? C.dark : "#bbb", padding: 0,
+                            transition: `color 0.25s ${EASE.nav}`,
                           }}
                         >
                           {l}
@@ -812,14 +807,14 @@ export function Navigation({
                       onMouseLeave={() => setPortalHover(false)}
                       style={{
                         display: "flex", alignItems: "center", gap: "8px",
-                        backgroundColor: portalHover ? "#989071" : "#1a1a1a", color: "#F2F1EC",
+                        backgroundColor: portalHover ? C.warm : C.dark, color: C.bgSecondary,
                         fontFamily: sans, fontSize: "11px", fontWeight: 700, letterSpacing: "1.5px",
                         textTransform: "uppercase", padding: "12px 20px", border: "none",
                         borderRadius: 0, cursor: "pointer",
-                        transition: `background-color 0.25s ${EASE}`, outline: "none", whiteSpace: "nowrap",
+                        transition: `background-color 0.25s ${EASE.nav}`, outline: "none", whiteSpace: "nowrap",
                       }}
                     >
-                      <LockIcon size={14} color="#F2F1EC" strokeWidth={1.5} />
+                      <LockIcon size={14} color=C.bgSecondary strokeWidth={1.5} />
                       Kundenportal
                     </button>
                     <span
@@ -845,7 +840,7 @@ export function Navigation({
                     }}
                     aria-label="LinkedIn"
                   >
-                    <LinkedInIcon color={liHover ? "#1a1a1a" : "#999"} />
+                    <LinkedInIcon color={liHover ? C.dark : "#999"} />
                   </button>
                 </div>
               </motion.div>

@@ -1,13 +1,11 @@
 import { useRef, useEffect, useState } from "react";
 
-const EASE = "cubic-bezier(0.25, 0.1, 0.25, 1)";
-const T_FAST = `0.35s ${EASE}`;
-const T_MEDIUM = `0.55s ${EASE}`;
-const T_SLOW = `0.8s ${EASE}`;
+import { EASE } from "../../styles/motion";
 
-// Ultra-smooth transitions for cinematic image panels
-const EASE_CINEMATIC = "cubic-bezier(0.16, 1, 0.3, 1)";
-const T_CINEMATIC = `1.8s ${EASE_CINEMATIC}`;
+const T_FAST = `0.35s ${EASE.nav}`;
+const T_MEDIUM = `0.55s ${EASE.nav}`;
+const T_SLOW = `0.8s ${EASE.nav}`;
+const T_CINEMATIC = `1.8s ${EASE.standard}`;
 
 /* ═══════════════════════════════════════════════════════════
    VERTICAL SCROLL PROGRESS (IntersectionObserver-based)

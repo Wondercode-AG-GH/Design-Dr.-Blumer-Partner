@@ -13,15 +13,7 @@ const SECTIONS = [
   { label: "Kontakt",  target: 1.000, threshold: 0.94 },  // Kontakt
 ];
 
-const sans = "'Inter', sans-serif";
-
-/* Palette — matches the rest of the design system */
-const COLOR = {
-  dotInactive:   "#C8C5BB",
-  dotActive:     "#8A8575",
-  labelInactive: "#8A857C",
-  labelActive:   "#3A3835",
-};
+import { C, sans } from "../tokens";
 
 function getActiveIndex(progress: number): number {
   let active = 0;
@@ -89,7 +81,7 @@ export function DotNavigation({ scrollProgress, onNavigate }: DotNavigationProps
                 width:           isActive ? "22px" : "8px",
                 height:          "8px",
                 borderRadius:    isActive ? "4px" : "50%",
-                backgroundColor: isActive ? COLOR.dotActive : COLOR.dotInactive,
+                backgroundColor: isActive ? C.dotActive : C.dotInactive,
                 opacity:         isActive ? 0.6 : 0.5,
                 transition:      "width 350ms cubic-bezier(0.16, 1, 0.3, 1), border-radius 350ms cubic-bezier(0.16, 1, 0.3, 1), background-color 350ms cubic-bezier(0.16, 1, 0.3, 1), opacity 350ms cubic-bezier(0.16, 1, 0.3, 1)",
               }}
@@ -102,7 +94,7 @@ export function DotNavigation({ scrollProgress, onNavigate }: DotNavigationProps
                 fontSize:      "8px",
                 letterSpacing: "1.5px",
                 textTransform: "uppercase",
-                color:         isActive ? COLOR.labelActive : COLOR.labelInactive,
+                color:         isActive ? C.charcoal : C.stone,
                 fontWeight:    isActive ? 500 : 400,
                 lineHeight:    1,
                 userSelect:    "none",

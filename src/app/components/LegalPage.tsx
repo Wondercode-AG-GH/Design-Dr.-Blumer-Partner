@@ -6,19 +6,8 @@ import {
   type LegalPath,
 } from "../data/legalPages";
 
-const sans = "'Inter', sans-serif";
-const serif = "'Cormorant Garamond', serif";
-
-const C = {
-  bg: "#F9F9F7",
-  dark: "#1A1916",
-  charcoal: "#3A3835",
-  stone: "#8A857C",
-  muted: "#B0ACA5",
-  line: "#D8D5CF",
-};
-
-const EASE = "cubic-bezier(0.16, 1, 0.3, 1)";
+import { C, serif, sans } from "../tokens";
+import { EASE } from "../../styles/motion";
 
 function isLegalPath(p: string): p is LegalPath {
   return (LEGAL_PATHS as readonly string[]).includes(p);
@@ -140,7 +129,7 @@ export function LegalPage({ activePath, onClose }: LegalPageProps) {
             display: "inline-flex",
             alignItems: "center",
             gap: "8px",
-            transition: `color 300ms ${EASE}`,
+            transition: `color 300ms ${EASE.standard}`,
             outline: "none",
           }}
           onMouseEnter={(e) => (e.currentTarget.style.color = C.dark)}
