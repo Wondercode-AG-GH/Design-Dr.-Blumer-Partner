@@ -46,6 +46,10 @@
   --tellian-dot-inactive: #C8C5BB;
   --tellian-dot-active: #8A8575;
 
+  /* REBRAND: pending — replace when final typeface is licensed */
+  --tellian-font-serif: 'Cormorant Garamond', serif;
+  --tellian-font-sans: 'Inter', sans-serif;
+
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: #030213;
@@ -137,6 +141,10 @@
   --color-tellian-accent: var(--tellian-accent);
   --color-tellian-dot-inactive: var(--tellian-dot-inactive);
   --color-tellian-dot-active: var(--tellian-dot-active);
+
+  /* REBRAND: pending */
+  --font-tellian-serif: var(--tellian-font-serif);
+  --font-tellian-sans: var(--tellian-font-sans);
 
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
