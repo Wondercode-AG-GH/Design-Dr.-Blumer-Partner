@@ -415,7 +415,7 @@ export function Navigation({
                       padding: "10px 16px", border: "none", cursor: "pointer",
                     }}
                   >
-                    <LockIcon size={14} color=C.bgSecondary strokeWidth={1.5} />
+                    <LockIcon size={14} color={C.bgSecondary} strokeWidth={1.5} />
                     Login
                   </button>
                 </div>
@@ -814,7 +814,7 @@ export function Navigation({
                         transition: `background-color 0.25s ${EASE.nav}`, outline: "none", whiteSpace: "nowrap",
                       }}
                     >
-                      <LockIcon size={14} color=C.bgSecondary strokeWidth={1.5} />
+                      <LockIcon size={14} color={C.bgSecondary} strokeWidth={1.5} />
                       Kundenportal
                     </button>
                     <span

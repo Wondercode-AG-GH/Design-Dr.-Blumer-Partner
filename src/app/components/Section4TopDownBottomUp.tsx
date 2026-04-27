@@ -176,9 +176,9 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
               gap:           "14px",
             }}
           >
-            <AccentRow text="Makroindikatoren und Konjunkturzyklen"     lineColor=C.warm />
-            <AccentRow text="Systematische Bewertung der Anlageklassen" lineColor=C.warm />
-            <AccentRow text="Strategischer Horizont: 3–5 Jahre"         lineColor=C.warm />
+            <AccentRow text="Makroindikatoren und Konjunkturzyklen"     lineColor={C.warm} />
+            <AccentRow text="Systematische Bewertung der Anlageklassen" lineColor={C.warm} />
+            <AccentRow text="Strategischer Horizont: 3–5 Jahre"         lineColor={C.warm} />
           </div>
         </div>
 
@@ -295,9 +295,9 @@ export function Section4TopDownBottomUp({ scrollX, isVertical = false, isDetailM
               gap:           "14px",
             }}
           >
-            <AccentRow text="Quantitative Modelle und Datenanalyse"   lineColor=C.line />
-            <AccentRow text="Technische Analyse und Marktpsychologie" lineColor=C.line />
-            <AccentRow text="Kurzfristige Trends und Opportunitäten"  lineColor=C.line />
+            <AccentRow text="Quantitative Modelle und Datenanalyse"   lineColor={C.line} />
+            <AccentRow text="Technische Analyse und Marktpsychologie" lineColor={C.line} />
+            <AccentRow text="Kurzfristige Trends und Opportunitäten"  lineColor={C.line} />
           </div>
         </div>
       </div>
