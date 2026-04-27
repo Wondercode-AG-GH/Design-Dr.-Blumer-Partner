@@ -46,6 +46,26 @@
   --tellian-dot-inactive: #C8C5BB;
   --tellian-dot-active: #8A8575;
 
+  /* ── Form states ── */
+  --tellian-error: #B5453A;
+  --tellian-error-bg: #FDF2F1;
+  --tellian-success: #3D7B5F;
+  --tellian-success-bg: #F0F7F3;
+  --tellian-warning: #A68B3C;
+  --tellian-warning-bg: #FBF7EE;
+
+  /* ── Shadows ── */
+  --tellian-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --tellian-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --tellian-shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
+
+  /* ── Z-index scale ── */
+  --tellian-z-dropdown: 100;
+  --tellian-z-sticky: 200;
+  --tellian-z-modal: 900;
+  --tellian-z-overlay: 1000;
+  --tellian-z-toast: 1100;
+
   /* REBRAND: pending — replace when final typeface is licensed */
   --tellian-font-serif: 'Cormorant Garamond', serif;
   --tellian-font-sans: 'Inter', sans-serif;
@@ -141,6 +161,19 @@
   --color-tellian-accent: var(--tellian-accent);
   --color-tellian-dot-inactive: var(--tellian-dot-inactive);
   --color-tellian-dot-active: var(--tellian-dot-active);
+
+  /* ── Form states → Tailwind (text-tellian-error, bg-tellian-success-bg, etc.) ── */
+  --color-tellian-error: var(--tellian-error);
+  --color-tellian-error-bg: var(--tellian-error-bg);
+  --color-tellian-success: var(--tellian-success);
+  --color-tellian-success-bg: var(--tellian-success-bg);
+  --color-tellian-warning: var(--tellian-warning);
+  --color-tellian-warning-bg: var(--tellian-warning-bg);
+
+  /* ── Shadows → Tailwind (shadow-tellian-sm, shadow-tellian-md, shadow-tellian-lg) ── */
+  --shadow-tellian-sm: var(--tellian-shadow-sm);
+  --shadow-tellian-md: var(--tellian-shadow-md);
+  --shadow-tellian-lg: var(--tellian-shadow-lg);
 
   /* REBRAND: pending */
   --font-tellian-serif: var(--tellian-font-serif);
